@@ -21,7 +21,7 @@ To run the setup script
 Install Pipenv and initialize the environment
 ```
 pip install pipenv
-pipenv install
+pipenv install --three
 ```
 
 Run the python virtualenv
