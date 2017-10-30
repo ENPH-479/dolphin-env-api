@@ -7,7 +7,7 @@ verify_ssl = true
 
 [packages]
 
-PyUserInput = "*"
+PyAutoGUI = "*"
 
 
 [dev-packages]

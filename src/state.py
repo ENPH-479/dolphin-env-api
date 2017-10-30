@@ -1,15 +1,27 @@
-from pykeyboard import PyKeyboard
+import logging
 
-keyboard = PyKeyboard()
+import pyautogui
 
+from src import helper
 
-def save(slot_num):
-    assert 0 < slot_num < 13
-    keyboard.press_keys([keyboard.shift_key, keyboard.function_keys[slot_num]])
-    keyboard.release_key(keyboard.shift_key)
-    keyboard.release_key(keyboard.function_keys[slot_num])
+logger = logging.getLogger(__name__)
 
 
-def load(slot_num):
-    assert 0 < slot_num < 13
-    keyboard.tap_key(keyboard.function_keys[slot_num])
+def save(slot_key):
+    try:
+        helper.validate_function_key(slot_key)
+        pyautogui.keyDown('shift')
+        pyautogui.keyDown(slot_key)
+        pyautogui.keyUp(slot_key)
+        pyautogui.keyUp('shift')
+    except (AssertionError, TypeError):
+        logger.exception("Error saving state {}:".format(slot_key))
+
+
+def load(slot_key):
+    try:
+        helper.validate_function_key(slot_key)
+        pyautogui.keyDown(slot_key)
+        pyautogui.keyUp(slot_key)
+    except (AssertionError, TypeError):
+        logger.exception("Error loading state {}:".format(slot_key))
