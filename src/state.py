@@ -25,3 +25,5 @@ def load(slot_key):
         pyautogui.keyUp(slot_key)
     except (AssertionError, TypeError):
         logger.exception("Error loading state {}:".format(slot_key))
+
+load('f3')
