@@ -12,6 +12,8 @@ logger = logging.getLogger(__name__)
 
 # temp testing function
 def main():
+    file = open("input.txt", "w")
+    file.close()
     with pad.Pad("~/.dolphin-emu/Pipes/pipe") as p:
         p.press_button(pad.Button.A)
         time.sleep(0.1)
