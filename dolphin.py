@@ -4,6 +4,7 @@ import time
 
 from src import pad
 from src import state
+from src import frame
 
 # configure logger
 logging.basicConfig(format='%(name)s:%(filename)s:%(lineno)d:%(message)s', level=logging.INFO)
@@ -15,14 +16,21 @@ def main():
     file = open("input.txt", "w")
     file.close()
     with pad.Pad("~/.dolphin-emu/Pipes/pipe") as p:
-        p.press_button(pad.Button.A)
+
+        p.prre_button(pad.Button.A)
         time.sleep(0.1)
-        p.press_button(pad.Button.START)
+        p.prre_button(pad.Button.START)
         time.sleep(0.1)
-        p.reset()
+
 
     state.load('f3')
-
+    time.sleep(1)
+    frame.advance('p')
+    time.sleep(1)
+    frame.advance('P')
+    time.sleep(1)
+    frame.advance('P')
+    time.sleep(1)
 
 if __name__ == '__main__':
     main()
