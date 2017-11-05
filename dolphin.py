@@ -17,20 +17,12 @@ def main():
     file.close()
     with pad.Pad("~/.dolphin-emu/Pipes/pipe") as p:
 
-        p.prre_button(pad.Button.A)
-        time.sleep(0.1)
         p.prre_button(pad.Button.START)
         time.sleep(0.1)
 
 
-    state.load('f3')
-    time.sleep(1)
-    frame.advance('p')
-    time.sleep(1)
-    frame.advance('P')
-    time.sleep(1)
-    frame.advance('P')
-    time.sleep(1)
+
+
 
 if __name__ == '__main__':
     main()
