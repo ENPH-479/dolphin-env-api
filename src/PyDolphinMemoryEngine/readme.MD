@@ -4,7 +4,7 @@ https://github.com/aldelaro5/Dolphin-memory-engine
 
 using SWIG. Run the following commands on Linux to generate the Python wrapper: 
 
-swig -c++ -python -py3 PyDolphinMemoryEngine
+swig -c++ -python -py3 PyDolphinMemoryEngine.i
 
 python setup.py build_ext --inplace
 
