@@ -1,19 +1,19 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "fbc67cc29f5eeefa98428b2c30c3986935228861e3572b904db21221c5e55495"
+            "sha256": "70a04219a0b8cd8b947f85df7a8c4077f1c15bf4b0fa8e25ecb93ead0b820ec5"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
-            "implementation_version": "3.4.3",
+            "implementation_version": "3.5.3",
             "os_name": "posix",
             "platform_machine": "x86_64",
             "platform_python_implementation": "CPython",
-            "platform_release": "3.19.0-42-generic",
+            "platform_release": "4.9.0-3-amd64",
             "platform_system": "Linux",
-            "platform_version": "#48~14.04.1-Ubuntu SMP Fri Dec 18 10:24:49 UTC 2015",
-            "python_full_version": "3.4.3",
-            "python_version": "3.4",
+            "platform_version": "#1 SMP Debian 4.9.30-2+deb9u5 (2017-09-19)",
+            "python_full_version": "3.5.3",
+            "python_version": "3.5",
             "sys_platform": "linux"
         },
         "pipfile-spec": 6,
@@ -27,6 +27,16 @@
         ]
     },
     "default": {
+        "enum34": {
+            "hashes": [
+                "sha256:6bd0f6ad48ec2aa117d3d141940d484deccda84d4fcd884f5c3d93c23ecd8c79",
+                "sha256:644837f692e5f550741432dd3f223bbb9852018674981b1664e5dc339387588a",
+                "sha256:8ad8c4783bf61ded74527bffb48ed9b54166685e4230386a9ed9b1279e2df5b1",
+                "sha256:2d81cbbe0e73112bdfe6ef8576f2238f2ba27dd0d55752a776c41d38b7da2850"
+            ],
+            "markers": "python_version == '2.7'",
+            "version": "==1.1.6"
+        },
         "olefile": {
             "hashes": [
                 "sha256:61f2ca0cd0aa77279eb943c07f607438edf374096b66332fae1ee64a6f0f73ad"
@@ -97,17 +107,38 @@
             ],
             "version": "==1.0.6"
         },
+        "pynput": {
+            "hashes": [
+                "sha256:456afa6f7793fbdcfb22c3026ecbb57c2f9c9addc95d5e2c0f659b0d1a84a2f4",
+                "sha256:ecf4eab29fe3bb3f1990b82b63e75f825686f7d2eddb49a84d01f3242ed030ee"
+            ],
+            "version": "==1.3.7"
+        },
         "pyscreeze": {
             "hashes": [
                 "sha256:4d752af522fcae606e56b77091fc27376fc0a3711a7ee8855b1f24f084b12783"
             ],
             "version": "==0.1.13"
         },
+        "python-xlib": {
+            "hashes": [
+                "sha256:ae343ad036f2ed5b718ece9ff74c30074a0c890d8062ca32b044c54f17e7ab31",
+                "sha256:6c61c6424d7861fe50279e5ff574481f4a9a0ea9c79eb0191aa5f5b3d4471c30"
+            ],
+            "version": "==0.20"
+        },
         "pytweening": {
             "hashes": [
                 "sha256:4b608a570f4dccf2201e898f643c2a12372eb1d71a3dbc7e778771b603ca248b"
             ],
             "version": "==1.0.3"
+        },
+        "six": {
+            "hashes": [
+                "sha256:832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb",
+                "sha256:70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9"
+            ],
+            "version": "==1.11.0"
         }
     },
     "develop": {}
