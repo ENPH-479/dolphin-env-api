@@ -10,6 +10,9 @@ verify_ssl = true
 pyautogui = "*"
 python-xlib = "*"
 pynput = "*"
+numpy = "*"
+opencv-python = "*"
+scikit-image = "*"
 
 
 [dev-packages]
