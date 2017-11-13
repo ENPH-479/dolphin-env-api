@@ -25,9 +25,8 @@ data=np.asarray(imrp,dtype='int32')
 
 test=block_reduce(data,block_size=(20,20,3),func=np.max)
 cv2.imwrite('/home/lrs/Desktop/test.png', test)
-print(test)
-qtest=test
 
+qtest=test
 qtest[(qtest>0) & (qtest<51)]=21
 qtest[(qtest>50) & (qtest<103)]=78
 qtest[(qtest>102) & (qtest<155)]=130
@@ -35,4 +34,5 @@ qtest[(qtest>154) & (qtest<207)]=182
 qtest[(qtest>206) & (qtest<256)]=232
 
 cv2.imwrite('/home/lrs/Desktop/qtest.png', qtest)
+
 
