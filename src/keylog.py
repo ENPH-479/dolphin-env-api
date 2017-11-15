@@ -27,7 +27,7 @@ class Keyboard(enum.Enum):
 
 
 class KeyLog():
-    def __init__(self, logging_freq=0.1):
+    def __init__(self, logging_freq=0.3):
         self.state = dict((el.name, False) for el in Keyboard)
         self.count = 1
         self.log = {"data": []}
