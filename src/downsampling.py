@@ -15,18 +15,19 @@ os.makedirs(file_path, exist_ok=True)
 for root,dirs,filenames in os.walk(sdir):
     for f in filenames:
         count+=1
-        #***need to modify the directory
         ima=cv2.imread(os.path.join(sdir,f))
 
+        # Filtering
         #ima=cv2.fastNlMeansDenoisingColored(ima,None,20,20,7,21)
         ima=cv2.medianBlur(ima,25)
         #ima=cv2.GaussianBlur(ima,(20,20),0)
 
+        # Resizing
         imrs=cv2.resize(ima,size)
-        #cv2.imwrite('/home/lrs/Desktop/new1.png',imrs)
+
+        # Grayscaling
         imrg=cv2.cvtColor(imrs,cv2.COLOR_BGR2GRAY)
-        #cv2.imwrite('/home/lrs/Desktop/result.png', imrg)
-        #imrp= cv2.imread('/home/lrs/Desktop/result.png')
+
         # Maxpooling
         data=np.asarray(imrg,dtype='int32')
         test=block_reduce(data,block_size=(30,30),func=np.max)
