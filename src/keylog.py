@@ -74,9 +74,9 @@ class KeyLog():
         })
         self.count += 1
 
-    def save_to_file(self):
+    def save_to_file(self, file_name="log.json"):
         output_dir = helper.get_output_folder()
-        with open(os.path.join(output_dir, 'log.json'), 'w') as f:
+        with open(os.path.join(output_dir, file_name), 'w') as f:
             json.dump(self.log, f)
 
     @staticmethod
