@@ -6,7 +6,7 @@ import threading
 import os
 from pynput import keyboard
 
-from src import screen
+from src import screen, helper
 
 logger = logging.getLogger(__name__)
 
@@ -75,10 +75,8 @@ class KeyLog():
         self.count += 1
 
     def save_to_file(self):
-        curr_path = os.path.dirname(os.path.realpath(__file__))
-        file_path = os.path.join(curr_path, "../output")
-        os.makedirs(file_path, exist_ok=True)
-        with open(os.path.join(file_path, 'log.json'), 'w') as f:
+        output_dir = helper.get_output_folder()
+        with open(os.path.join(output_dir, 'log.json'), 'w') as f:
             json.dump(self.log, f)
 
     @staticmethod

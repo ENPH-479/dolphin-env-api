@@ -2,7 +2,7 @@ import logging
 
 import time
 
-from src import pad, keylog
+from src import pad, keylog, downsampling
 
 # configure logger
 logging.basicConfig(format='%(name)s:%(filename)s:%(lineno)d:%(message)s', level=logging.INFO)
@@ -14,6 +14,9 @@ def main():
     # with pad.Pad("~/.dolphin-emu/Pipes/pipe") as p:
     #     p.prre_button(pad.Button.START)
     #     time.sleep(0.1)
+
+    # downsampling.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
+
     k = keylog.KeyLog()
     k.start()
 
