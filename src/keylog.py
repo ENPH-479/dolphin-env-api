@@ -1,10 +1,11 @@
+""" This module enables logging of keyboard inputs sent to the Dolphin emulator. """
+
 import enum
 import logging
 import json
 import threading
 import os
 from pynput import keyboard
-
 from src import dolphinscreenshot, helper
 
 logger = logging.getLogger(__name__)
@@ -12,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 @enum.unique
 class Keyboard(enum.Enum):
+    """ Default Dolphin keyboard map """
     none = 0  # Neutral controller state
     x = 1  # PRESS A
     z = 2  # PRESS B
@@ -26,12 +28,20 @@ class Keyboard(enum.Enum):
 
 
 class KeyLog():
-    def __init__(self, logging_freq=0.3):
+    """ Class allowing user to listen for, record, and save keyboard inputs. """
+
+    def __init__(self, logging_delay=0.3):
+        """ Create KeyLog instance.
+
+        Args:
+            logging_delay: Amount of time to wait before checking keyboard state again in
+                seconds.
+        """
         self.state = dict((el.name, False) for el in Keyboard)
         self.count = 1
         self.log = {"data": []}
         self.finish = False
-        self.logging_freq = logging_freq
+        self.logging_freq = logging_delay
 
     # Collect events until released
     def start(self):
@@ -66,7 +76,7 @@ class KeyLog():
     def record(self):
         if self.finish: return
         threading.Timer(self.logging_freq, self.record).start()
-        dolphinscreenshot.get_screen()
+        dolphinscreenshot.take_screenshot()
         self.log['data'].append({
             "count": self.count,
             "presses": dict(self.state)

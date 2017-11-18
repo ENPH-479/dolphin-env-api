@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def get_screen():
+def take_screenshot():
     """ Use Dolphin's screenshot ability to take a screenshot of the current Dolphin emulator state.
 
     Note:
