@@ -87,10 +87,6 @@ class DolphinController:
         assert button in Button
         self.pipe.write('PRESS {}\n'.format(button.name))
         logger.info("\n {} pressed".format(button.name))
-        # pipe_in = 'PRESS {}\n'.format(button.name)
-        # file = open("input.txt", "a")
-        # file.write(pipe_in)
-        # file.close()
 
     def release_button(self, button):
         """ Release a Dolphin controller button.
@@ -101,10 +97,6 @@ class DolphinController:
         assert button in Button
         self.pipe.write('RELEASE {}\n'.format(button.name))
         logger.info("\n {} released".format(button.name))
-        # pipe_in = 'RELEASE {}\n'.format(button.name)
-        # file = open("input.txt", "a")
-        # file.write(pipe_in)
-        # file.close()
 
     def press_release_button(self, button, delay):
         """ Press and release a Dolphin controller button.
@@ -129,10 +121,6 @@ class DolphinController:
         assert trigger in Trigger
         assert 0 <= amount <= 1
         self.pipe.write('SET {} {:.2f}\n'.format(trigger.name, amount))
-        # pipe_in = 'SET {} {:.2f}\n'.format(trigger.name, amount)
-        # file = open("input.txt", "a")
-        # file.write(pipe_in)
-        # file.close()
 
     def set_stick(self, stick, x, y):
         """ Set the location of a Dolphin controller stick/joystick.
@@ -147,10 +135,6 @@ class DolphinController:
         assert stick in Stick
         assert 0 <= x <= 1 and 0 <= y <= 1
         self.pipe.write('SET {} {:.2f} {:.2f}\n'.format(stick.name, x, y))
-        # pipe_in = 'SET {} {:.2f} {:.2f}\n'.format(stick.name, x, y)
-        # file = open("input.txt", "a")
-        # file.write(pipe_in)
-        # file.close()
 
     def reset(self):
         """ Reset all Dolphin controller elements to released or neutral position. """

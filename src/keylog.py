@@ -6,7 +6,7 @@ import json
 import threading
 import os
 from pynput import keyboard
-from src import dolphin_screenshot, helper
+from src import dp_screenshot, helper
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,7 @@ class KeyLog():
     def record(self):
         if self.finish: return
         threading.Timer(self.logging_freq, self.record).start()
-        dolphin_screenshot.take_screenshot()
+        dp_screenshot.take_screenshot()
         self.log['data'].append({
             "count": self.count,
             "presses": dict(self.state)
