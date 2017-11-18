@@ -5,6 +5,7 @@ import logging
 import json
 import threading
 import os
+
 from pynput import keyboard
 from src import dp_screenshot, helper
 
@@ -41,7 +42,7 @@ class KeyLog():
         self.count = 1
         self.log = {"data": []}
         self.finish = False
-        self.logging_freq = logging_delay
+        self.logging_delay = logging_delay
 
     # Collect events until released
     def start(self):
@@ -50,7 +51,9 @@ class KeyLog():
             listener.join()
             logger.info("Key logging session finished.")
 
+    # on key press callback. sets pressed key state to True. shows warning if key is not defined.
     def on_press(self, key):
+        if key == keyboard.Key.f9 or key == keyboard.Key.esc: return
         try:
             value = self._get_key_value(key)
             if not self.state[Keyboard[value].name]:
@@ -59,6 +62,7 @@ class KeyLog():
         except KeyError:
             logger.warning("Pressed key not defined within allowable controller inputs.")
 
+    # on key release callback. sets released key state to False
     def on_release(self, key):
         try:
             value = self._get_key_value(key)
@@ -73,9 +77,10 @@ class KeyLog():
                 # Stop listener
                 return False
 
+    # log key press states while taking screenshots based on defined frequency
     def record(self):
         if self.finish: return
-        threading.Timer(self.logging_freq, self.record).start()
+        threading.Timer(self.logging_delay, self.record).start()
         dp_screenshot.take_screenshot()
         self.log['data'].append({
             "count": self.count,

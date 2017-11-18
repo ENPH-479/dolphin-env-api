@@ -10,8 +10,8 @@ from src import helper
 logger = logging.getLogger(__name__)
 
 
-class state_map():
-    """ Class for storing the basic Mario Kart AI agent's state-decision probabilities.
+class StateModel:
+    """ Class for storing the basic Mario Kart AI agent's state-decision probabilities in a lookup table.
 
     Attributes:
         screenshot_dir: Directory where the Dolphin emulator saves screenshots.
@@ -20,9 +20,10 @@ class state_map():
         image_dir: Directory containing the downsampled Dolphin images.
         state_decision_map: Dictionary containing the state to decision probability mapping.
      """
-    def __init__(self):
+
+    def __init__(self, keylog_file="log.json"):
         self.screenshot_dir = os.path.join(helper.get_home_folder(), '.dolphin-emu', 'ScreenShots')
-        self.keylog_filename = "log.json"
+        self.keylog_filename = keylog_file
         self.output_dir = helper.get_output_folder()
         self.image_dir = os.path.join(helper.get_output_folder(), "images")
         self.state_decision_map = dict()
@@ -65,7 +66,7 @@ class state_map():
 
                     for k in self.state_decision_map[image_serialized]:
                         if key_map_numeric[k] == 1:
-                            self.state_decision_map[image_serialized][k] +=1
+                            self.state_decision_map[image_serialized][k] += 1
 
                     state_counts[image_serialized] += 1
 
@@ -76,5 +77,4 @@ class state_map():
             # Normalize the entries in the state decision map
             for k in self.state_decision_map:
                 for key in self.state_decision_map[k]:
-                    self.state_decision_map[k][key] = self.state_decision_map[k][key]/state_counts[k]
-
+                    self.state_decision_map[k][key] = self.state_decision_map[k][key] / state_counts[k]

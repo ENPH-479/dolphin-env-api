@@ -52,7 +52,7 @@ class Downsampler:
 
             # Laplacian Filtering
             # im_laplace = cv2.Laplacian(im_gray,cv2.CV_8U,ksize=5)
-            
+
             # Maxpooling
             data = np.asarray(im_gray, dtype='int32')
             img_pooled = block_reduce(data, block_size=(self.pooling_dim, self.pooling_dim), func=np.max)
