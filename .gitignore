@@ -4,6 +4,7 @@
 *.pyc
 # output files
 output/
+Image/
 
 # Compiled source #
 ###################
