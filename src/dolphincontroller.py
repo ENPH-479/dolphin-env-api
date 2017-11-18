@@ -1,3 +1,10 @@
+""" This module provides tools for programmatic control of the Dolphin emulator via fifo pipes.
+
+Note: More information about the Dolphin emulator can be found at:
+    https://dolphin-emu.org/
+    https://github.com/dolphin-emu/dolphin
+"""
+
 import enum
 import logging
 import os
@@ -37,29 +44,46 @@ class Stick(enum.Enum):
     C = 1
 
 
-class Pad:
-    """Writes out controller inputs."""
+class DolphinController:
+    """ Class allowing user to send controller inputs to Dolphin programmatically using fifo pipes.
+
+    Note:
+        Currently only functional on Linux operating systems. See below for more info:
+        https://wiki.dolphin-emu.org/index.php?title=Pipe_Input
+    """
 
     def __init__(self, path):
-        """Create, but do not open the fifo."""
+        """ Create DolphinController instance, but do not open the fifo pipe.
+
+        Args:
+            path: Location of the Dolphin fifo pipe configuration file
+
+        Note:
+            The Dolphin fifo pipe configuration file is often located at:
+            ~/.dolphin-emu/Pipes/pipe
+        """
         self.pipe = None
         self.path = os.path.expanduser(path)
         logger.info("Controller pad initialized.")
 
     def __enter__(self):
-        """Opens the fifo. Blocks until the other side is listening."""
+        """ Open the fifo pipe. Blocks until the other side is listening. """
         self.pipe = open(self.path, 'w', buffering=1)
         logger.info("Pipe opened.")
         return self
 
     def __exit__(self, *args):
-        """Closes the fifo."""
+        """ Close the fifo pipe. """
         if self.pipe:
             self.pipe.close()
             logger.info("Pipe closed.")
 
     def press_button(self, button):
-        """Press a button."""
+        """ Press a Dolphin controller button.
+
+        Args:
+            button: The Dolphin controller button to press. Must be a supported Dolphin button.
+        """
         assert button in Button
         self.pipe.write('PRESS {}\n'.format(button.name))
         logger.info("\n {} pressed".format(button.name))
@@ -69,7 +93,11 @@ class Pad:
         # file.close()
 
     def release_button(self, button):
-        """Release a button."""
+        """ Release a Dolphin controller button.
+
+        Args:
+            button: The Dolphin controller button to release. Must be a supported Dolphin button.
+        """
         assert button in Button
         self.pipe.write('RELEASE {}\n'.format(button.name))
         logger.info("\n {} released".format(button.name))
@@ -78,13 +106,26 @@ class Pad:
         # file.write(pipe_in)
         # file.close()
 
-    def prre_button(self, button):
+    def press_release_button(self, button, delay):
+        """ Press and release a Dolphin controller button.
+
+        Args:
+            button: The Dolphin controller button to release. Must be a supported Dolphin button.
+            delay: The number of seconds to delay between pressing and releasing the button.
+        """
         self.press_button(button)
-        time.sleep(0.1)
+        time.sleep(delay)
         self.release_button(button)
 
-    def press_trigger(self, trigger, amount):
-        """Press a trigger. Amount is in [0, 1], with 0 as released."""
+    def set_trigger(self, trigger, amount):
+        """ Set how far down a Dolphin controller trigger is pressed.
+
+        Args:
+            trigger: The Dolphin controller trigger to set. Must be a supported Dolphin trigger.
+            amount: How far to press the Dolphin controller trigger. Must be a value between 0 and 1.
+                0 indicates the trigger is released, and 1 indicates the controller is fully pressed
+                down.
+        """
         assert trigger in Trigger
         assert 0 <= amount <= 1
         self.pipe.write('SET {} {:.2f}\n'.format(trigger.name, amount))
@@ -93,8 +134,16 @@ class Pad:
         # file.write(pipe_in)
         # file.close()
 
-    def tilt_stick(self, stick, x, y):
-        """Tilt a stick. x and y are in [0, 1], with 0.5 as neutral."""
+    def set_stick(self, stick, x, y):
+        """ Set the location of a Dolphin controller stick/joystick.
+
+        Args:
+            stick: The Dolphin controller stick to set. Must be a supported Dolphin stick.
+            x: The x position of the stick. Must be a value between 0 and 1. 0.5 indicates the trigger
+                is neutral, 1 is full up, and -1 is full down.
+            y: The y position of the stick. Must be a value between 0 and 1. 0.5 indicates the trigger
+                is neutral, 1 is full up, and -1 is full down.
+        """
         assert stick in Stick
         assert 0 <= x <= 1 and 0 <= y <= 1
         self.pipe.write('SET {} {:.2f} {:.2f}\n'.format(stick.name, x, y))
@@ -107,6 +156,6 @@ class Pad:
         for button in Button:
             self.release_button(button)
         for trigger in Trigger:
-            self.press_trigger(trigger, 0)
+            self.set_trigger(trigger, 0)
         for stick in Stick:
-            self.tilt_stick(stick, 0.5, 0.5)
+            self.set_stick(stick, 0.5, 0.5)

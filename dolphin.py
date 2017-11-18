@@ -2,7 +2,7 @@ import logging
 
 import time
 
-from src import pad, keylog, downsampling
+from src import dolphincontroller, keylog, downsampling
 
 # configure logger
 logging.basicConfig(format='%(name)s:%(filename)s:%(lineno)d:%(message)s', level=logging.INFO)
@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 
 # temp testing function
 def main():
-    # with pad.Pad("~/.dolphin-emu/Pipes/pipe") as p:
-    #     p.prre_button(pad.Button.START)
+    # with pad.DolphinController("~/.dolphin-emu/Pipes/pipe") as p:
+    #     p.press_release_button(pad.Button.START)
     #     time.sleep(0.1)
 
     # downsampling.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)

@@ -2,7 +2,6 @@ import enum
 import logging
 import json
 import threading
-
 import os
 from pynput import keyboard
 
