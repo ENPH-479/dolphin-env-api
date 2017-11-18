@@ -4,9 +4,9 @@ import time
 
 from src import pad, keylog, downsampling
 
-# configure logger
-logging.basicConfig(format='%(name)s:%(filename)s:%(lineno)d:%(message)s', level=logging.INFO)
-logger = logging.getLogger(__name__)
+#configure logger
+#logging.basicConfig(format='%(name)s:%(filename)s:%(lineno)d:%(message)s', level=logging.INFO)
+#logger = logging.getLogger(__name__)
 
 
 # temp testing function
@@ -15,10 +15,10 @@ def main():
     #     p.prre_button(pad.Button.START)
     #     time.sleep(0.1)
 
-    # downsampling.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
+    downsampling.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
 
-    k = keylog.KeyLog()
-    k.start()
+    #k = keylog.KeyLog()
+    #k.start()
 
 
 if __name__ == '__main__':
