@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """ This module contains some tests of code functionality. """
 
 import logging
