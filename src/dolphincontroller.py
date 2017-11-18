@@ -2,11 +2,13 @@ import enum
 import logging
 import os
 import time
+
 logger = logging.getLogger(__name__)
 
 
 @enum.unique
 class Button(enum.Enum):
+    """ Supported Dolphin buttons """
     A = 0
     B = 1
     X = 2
@@ -23,12 +25,14 @@ class Button(enum.Enum):
 
 @enum.unique
 class Trigger(enum.Enum):
+    """ Supported Dolphin triggers """
     L = 0
     R = 1
 
 
 @enum.unique
 class Stick(enum.Enum):
+    """ Supported Dolphin  sticks """
     MAIN = 0
     C = 1
 
