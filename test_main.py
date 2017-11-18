@@ -1,5 +1,4 @@
 import logging
-
 import time
 
 from src import dolphincontroller, keylog, basicMarioKartdownsampling
@@ -17,8 +16,8 @@ def main():
 
     basicMarioKartdownsampling.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
 
-    k = keylog.KeyLog()
-    k.start()
+    #k = keylog.KeyLog()
+    #k.start()
 
 
 if __name__ == '__main__':
