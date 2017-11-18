@@ -31,14 +31,14 @@ class Downsampler:
             while count <= num_files:
                 file_name = "{}-{}.png".format(self.game_name, count)
                 f = os.path.join(screen_dir, file_name)
-                self.downsample(f, count, save_imgs)
+                self.downsample(f, output_name=count, save_img=save_imgs)
                 if clean_data: os.unlink(f)
                 count += 1
         except:
             logger.error(traceback.format_exc())
             logger.error("failed to downsample entire screenshot directory.")
 
-    def downsample(self, file_path, output_name, save_img=False):
+    def downsample(self, file_path, output_name=None, save_img=False):
         try:
             logger.info("downsampling {}".format(file_path))
             img = cv2.imread(file_path)
@@ -61,6 +61,7 @@ class Downsampler:
             quantized[(quantized > 206) & (quantized < 256)] = 232
 
             if save_img: self.save_image(quantized, output_name)
+            return quantized
         except:
             logger.error(traceback.format_exc())
             logger.error("failed to downsample image.")
