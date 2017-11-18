@@ -58,21 +58,21 @@ class Pad:
         """Press a button."""
         assert button in Button
         self.pipe.write('PRESS {}\n'.format(button.name))
-        pipe_in = 'PRESS {}\n'.format(button.name)
         logger.info("\n {} pressed".format(button.name))
-        file = open("input.txt", "a")
-        file.write(pipe_in)
-        file.close()
+        # pipe_in = 'PRESS {}\n'.format(button.name)
+        # file = open("input.txt", "a")
+        # file.write(pipe_in)
+        # file.close()
 
     def release_button(self, button):
         """Release a button."""
         assert button in Button
         self.pipe.write('RELEASE {}\n'.format(button.name))
-        pipe_in = 'RELEASE {}\n'.format(button.name)
         logger.info("\n {} released".format(button.name))
-        file = open("input.txt", "a")
-        file.write(pipe_in)
-        file.close()
+        # pipe_in = 'RELEASE {}\n'.format(button.name)
+        # file = open("input.txt", "a")
+        # file.write(pipe_in)
+        # file.close()
 
     def prre_button(self, button):
         self.press_button(button)
@@ -84,20 +84,20 @@ class Pad:
         assert trigger in Trigger
         assert 0 <= amount <= 1
         self.pipe.write('SET {} {:.2f}\n'.format(trigger.name, amount))
-        pipe_in = 'SET {} {:.2f}\n'.format(trigger.name, amount)
-        file = open("input.txt", "a")
-        file.write(pipe_in)
-        file.close()
+        # pipe_in = 'SET {} {:.2f}\n'.format(trigger.name, amount)
+        # file = open("input.txt", "a")
+        # file.write(pipe_in)
+        # file.close()
 
     def tilt_stick(self, stick, x, y):
         """Tilt a stick. x and y are in [0, 1], with 0.5 as neutral."""
         assert stick in Stick
         assert 0 <= x <= 1 and 0 <= y <= 1
         self.pipe.write('SET {} {:.2f} {:.2f}\n'.format(stick.name, x, y))
-        pipe_in = 'SET {} {:.2f} {:.2f}\n'.format(stick.name, x, y)
-        file = open("input.txt", "a")
-        file.write(pipe_in)
-        file.close()
+        # pipe_in = 'SET {} {:.2f} {:.2f}\n'.format(stick.name, x, y)
+        # file = open("input.txt", "a")
+        # file.write(pipe_in)
+        # file.close()
 
     def reset(self):
         for button in Button:
