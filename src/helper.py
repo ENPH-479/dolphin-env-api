@@ -1,5 +1,6 @@
-import re
+""" Module containing miscellaneous helper functions. """
 
+import re
 import os
 
 fkey_pattern = re.compile(r'^F(\d{1,2})$', re.I)

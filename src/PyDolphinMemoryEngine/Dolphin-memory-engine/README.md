@@ -44,7 +44,7 @@ First, open Dolphin and start a game, then run this program. Make sure that it r
 
 If the hooking process is successful, the UI should be enabled, otherwise, you will need to click the hook button before the program can be of any use.
 
-Once hooked, you can do scans just like Cheat Engine as well as manage your watch list. You can save and load your watch list to disk by using the file menu. Note, the watch list files uses JSON internally so you can edit them manually with a text editor.
+Once hooked, you can do scans just like Cheat Engine as well as manage your watch list. You can save_dolphin_state and load_dolphin_state your watch list to disk by using the file menu. Note, the watch list files uses JSON internally so you can edit them manually with a text editor.
 
 If the program unhooks itself from Dolphin, it means a read/write failed which normally means that the emulation has stopped in some way. Just boot a game again to solve this; your watch list and scan will be retained if this happens.
 

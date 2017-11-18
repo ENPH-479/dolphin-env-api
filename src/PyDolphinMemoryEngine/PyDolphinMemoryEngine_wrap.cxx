@@ -1075,10 +1075,10 @@ SWIG_Python_AddErrorMsg(const char* mesg)
        };
        class SWIG_Python_Thread_Allow {
          bool status;
-         PyThreadState *save;
+         PyThreadState *save_dolphin_state;
        public:
-         void end() { if (status) { PyEval_RestoreThread(save); status = false; }}
-         SWIG_Python_Thread_Allow() : status(true), save(PyEval_SaveThread()) {}
+         void end() { if (status) { PyEval_RestoreThread(save_dolphin_state); status = false; }}
+         SWIG_Python_Thread_Allow() : status(true), save_dolphin_state(PyEval_SaveThread()) {}
          ~SWIG_Python_Thread_Allow() { end(); }
        };
 #      define SWIG_PYTHON_THREAD_BEGIN_BLOCK   SWIG_Python_Thread_Block _swig_thread_block
@@ -1707,7 +1707,7 @@ SwigPyObject_dealloc(PyObject *v)
          the active active exception.  In cases of unnamed temporary
          variable or where we just finished iterating over a generator
          StopIteration will be active right now, and this needs to
-         remain true upon return from SwigPyObject_dealloc.  So save
+         remain true upon return from SwigPyObject_dealloc.  So save_dolphin_state
          and restore. */
       
       PyObject *val = NULL, *type = NULL, *tb = NULL;
@@ -7129,7 +7129,7 @@ SWIG_InitializeModule(void *clientdata) {
     init = 0;
   }
   
-  /* Try and load any already created modules */
+  /* Try and load_dolphin_state any already created modules */
   module_head = SWIG_GetModule(clientdata);
   if (!module_head) {
     /* This is the first module loaded for this interpreter */
@@ -7712,7 +7712,7 @@ SWIG_init(void) {
     SwigPyObject_stype->clientdata = &SwigPyObject_clientdata;
     SwigPyObject_clientdata.pytype = SwigPyObject_TypeOnce();
   } else if (SwigPyObject_TypeOnce()->tp_basicsize != cd->pytype->tp_basicsize) {
-    PyErr_SetString(PyExc_RuntimeError, "Import error: attempted to load two incompatible swig-generated modules.");
+    PyErr_SetString(PyExc_RuntimeError, "Import error: attempted to load_dolphin_state two incompatible swig-generated modules.");
 # if PY_VERSION_HEX >= 0x03000000
     return NULL;
 # else

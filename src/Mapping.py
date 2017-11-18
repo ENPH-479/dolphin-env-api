@@ -5,7 +5,7 @@ import cv2
 import os
 from pynput import keyboard
 
-from src import screen, helper
+from src import dolphinscreenshot, helper
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +60,7 @@ test.mapping()
 
 '''
 with open(os.path.join(helper.get_output_folder(), "log.json"), 'r') as f:
-    log=json.load(f)
+    log=json.load_dolphin_state(f)
 
     print(iter(log['data'][1]['presses']))
 '''

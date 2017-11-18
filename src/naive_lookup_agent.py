@@ -17,6 +17,7 @@ class NaiveAgent:
         screen.get_screen()
         # load img
         screen_dir = os.path.join(self.screenshot_dir, self.game_name)
+
         # downsample
         downsampling.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
         # look up game state
