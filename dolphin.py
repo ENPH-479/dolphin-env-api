@@ -12,13 +12,13 @@ from src import dolphincontroller, keylog, basicMarioKartdownsampling
 # temp testing function
 def main():
     # with pad.DolphinController("~/.dolphin-emu/Pipes/pipe") as p:
-    #     p.press_release_button(pad.Button.START)
+    #     p.press_release_button(pad.Button.START, 0.1)
     #     time.sleep(0.1)
 
-    downsampling.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
+    basicMarioKartdownsampling.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
 
-    #k = keylog.KeyLog()
-    #k.start()
+    k = keylog.KeyLog()
+    k.start()
 
 
 if __name__ == '__main__':
