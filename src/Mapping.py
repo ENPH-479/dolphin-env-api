@@ -5,7 +5,7 @@ import cv2
 import os
 from pynput import keyboard
 
-from src import dolphinscreenshot, helper
+from src import dolphin_screenshot, helper
 
 logger = logging.getLogger(__name__)
 

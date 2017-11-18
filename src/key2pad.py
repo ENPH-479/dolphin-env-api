@@ -1,5 +1,5 @@
 import src.keylog as keylog
-from src import dolphincontroller
+from src import dolphin_controller
 
 
 class KeyPadMap:
@@ -19,17 +19,17 @@ class KeyPadMap:
         # TODO organize in general way such that an controller input can be sent to pipe only knowing the key
         key_pad = None
         if key == 'x':
-            key_pad = dolphincontroller.Button.A
+            key_pad = dolphin_controller.Button.A
         elif key == 'z':
-            key_pad = dolphincontroller.Button.B
+            key_pad = dolphin_controller.Button.B
         elif key == 'c':
-            key_pad = dolphincontroller.Button.X
+            key_pad = dolphin_controller.Button.X
         elif key == 's':
-            key_pad = dolphincontroller.Button.Y
+            key_pad = dolphin_controller.Button.Y
         elif key == 'd':
-            key_pad = dolphincontroller.Button.Z
+            key_pad = dolphin_controller.Button.Z
         elif key == 'enter':
-            key_pad = dolphincontroller.Button.START
+            key_pad = dolphin_controller.Button.START
         elif key == 'left' or key == 'right' or key == 'up' or key == 'down':
-            key_pad = dolphincontroller.Stick.MAIN
+            key_pad = dolphin_controller.Stick.MAIN
         return key_pad
