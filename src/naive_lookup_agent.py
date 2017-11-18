@@ -12,7 +12,7 @@ class NaiveAgent:
     def run(self):
         # TODO complete
         # take screenshot
-        # load img
+        # load_dolphin_state img
         # downsample
         # look up game state
         # generate random number [0,1]

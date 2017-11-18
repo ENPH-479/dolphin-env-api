@@ -58,7 +58,7 @@ class KeyLog():
         except KeyError:
             if key == keyboard.Key.esc:
                 self.finish = True
-                # save key press log
+                # save_dolphin_state key press log
                 self.save_to_file()
                 # Stop listener
                 return False

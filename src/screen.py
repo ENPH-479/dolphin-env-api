@@ -4,7 +4,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 """
-Grab screenshot of current game state and save to ~/.dolphin-emu/ScreenShots
+Grab screenshot of current game state and save_dolphin_state to ~/.dolphin-emu/ScreenShots
 """
 def get_screen():
     try:

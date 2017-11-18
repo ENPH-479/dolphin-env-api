@@ -153,6 +153,7 @@ class DolphinController:
         # file.close()
 
     def reset(self):
+        """ Reset all Dolphin controller elements to released or neutral position. """
         for button in Button:
             self.release_button(button)
         for trigger in Trigger:
