@@ -3,6 +3,7 @@
 import logging
 import json
 import cv2
+import pickle
 import os
 from src import helper
 
@@ -30,7 +31,7 @@ class state_map():
         """ Populate this state map. """
         # Loop over all the output keylog/downsampled image pairs
         num_files = len(os.listdir(self.image_dir))
-        count = 1
+        count = 0
         # Open and parse the .json keyboard log information
         with open(os.path.join(self.output_dir, self.keylog_filename), 'r') as key_log_file:
             key_log_data = json.load(key_log_file)
@@ -40,41 +41,40 @@ class state_map():
 
             # Process the downsampled images one by one
             while count <= num_files:
+                count += 1
                 # Read the image data
                 image_file_name = "{}.png".format(count)
                 image_data = cv2.imread(os.path.join(self.image_dir, image_file_name))
                 # Generate a tuple from the image so we can hash
-                image_tuple = tuple(map(float, image_data))
+                image_serialized = pickle.dumps(image_data, protocol=0)
 
                 # Parse the key log .json dictionaries
-                key_map_boolean = log['data'][count]['presses']
+                key_map_boolean = key_log_data['data'][count]['presses']
                 key_map_numeric = dict()
 
                 # Convert "true" entries to 1 and "false" entries to 0
                 for k in key_map_boolean:
-                    if key_map_boolean['k'] == "true":
-                        key_map_numeric['k'] = 1
+                    if key_map_boolean[k] == True:
+                        key_map_numeric[k] = 1
 
-                    elif key_map_boolean == "false":
-                        key_map_numeric['k'] = 0
+                    elif key_map_boolean[k] == False:
+                        key_map_numeric[k] = 0
 
                 # Check if the state already exists in the state map
-                if image_tuple in self.state_decision_map:
+                if image_serialized in self.state_decision_map:
 
-                    for k in self.state_decision_map['image_tuple']:
-                        if key_map_numeric['k'] == 1:
-                            self.state_decision_map['image_tuple']['k'] +=1
+                    for k in self.state_decision_map[image_serialized]:
+                        if key_map_numeric[k] == 1:
+                            self.state_decision_map[image_serialized][k] +=1
 
-                    state_counts['image_tuple'] += 1
+                    state_counts[image_serialized] += 1
 
                 else:
-                    self.state_decision_map['image_tuple'] = key_map_numeric
-                    state_counts['image_tuple'] = 1
-
-            count += 1
+                    self.state_decision_map[image_serialized] = key_map_numeric
+                    state_counts[image_serialized] = 1
 
             # Normalize the entries in the state decision map
             for k in self.state_decision_map:
-                for key in self.state_decision_map['k']:
-                    self.state_decision_map['k']['key'] = self.state_decision_map['k']['key']/state_counts['k']
+                for key in self.state_decision_map[k]:
+                    self.state_decision_map[k][key] = self.state_decision_map[k][key]/state_counts[k]
 

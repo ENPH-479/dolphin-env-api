@@ -4,7 +4,7 @@
 
 import logging
 import time
-from src import dolphin_controller, keylog, basic_Mario_Kart_downsampler
+from src import dolphin_controller, keylog, basic_Mario_Kart_downsampler, state_map
 
 # Configure logger
 logging.basicConfig(format='%(name)s:%(filename)s:%(lineno)d:%(message)s', level=logging.INFO)
@@ -25,11 +25,18 @@ def test_key_logging():
     k = keylog.KeyLog()
     k.start()
 
+def test_state_map_population():
+    """ Check that a state decision map can be properly populated from images and key logs. """
+    map = state_map.state_map()
+    map.populate_map()
+    map.state_decision_map
 
 # Main function for entering tests
 def main():
+    # test_dolphin_controller
+    # test_basic_Mario_Kart_downsampler()
     # test_key_logging()
-    test_basic_Mario_Kart_downsampler()
+    test_state_map_population()
 
 
 if __name__ == '__main__':
