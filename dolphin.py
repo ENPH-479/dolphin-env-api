@@ -2,7 +2,7 @@ import logging
 
 import time
 
-from src import dolphincontroller, keylog, downsampling
+from src import dolphincontroller, keylog, basicMarioKartdownsampling
 
 # configure logger
 logging.basicConfig(format='%(name)s:%(filename)s:%(lineno)d:%(message)s', level=logging.INFO)

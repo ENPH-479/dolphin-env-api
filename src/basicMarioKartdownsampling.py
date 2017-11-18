@@ -1,12 +1,11 @@
+""" This module implements the image downsampling component of the basic Mario Kart AI agent. """
+
 import logging
 import traceback
-
 import cv2
 import numpy as np
 import os
-
 from skimage.measure import block_reduce
-
 from src import helper
 
 logger = logging.getLogger(__name__)
