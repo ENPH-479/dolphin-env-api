@@ -30,25 +30,29 @@ class Downsampler:
             while count <= num_files:
                 file_name = "{}-{}.png".format(self.game_name, count)
                 f = os.path.join(screen_dir, file_name)
-                self.downsample(f, output_name=count, save_img=save_imgs)
-                if clean_data: os.unlink(f)
+                self.downsample(f, output_name=count, save_img=save_imgs, clean_data=clean_data)
                 count += 1
         except:
             logger.error(traceback.format_exc())
             logger.error("failed to downsample entire screenshot directory.")
 
-    def downsample(self, file_path, output_name=None, save_img=False):
+    def downsample(self, file_path, output_name=None, save_img=False, clean_data=False):
         try:
             logger.info("downsampling {}".format(file_path))
             img = cv2.imread(file_path)
+
             # Filtering
             im_blurred = cv2.medianBlur(img, self.blur_size)
+
             # Resizing
             im_rs = cv2.resize(im_blurred, self.inter_dim)
+
             # Grayscaling
             im_gray = cv2.cvtColor(im_rs, cv2.COLOR_BGR2GRAY)
+
             # Laplacian Filtering
-            #im_laplace = cv2.Laplacian(im_gray,cv2.CV_8U,ksize=5)
+            # im_laplace = cv2.Laplacian(im_gray,cv2.CV_8U,ksize=5)
+            
             # Maxpooling
             data = np.asarray(im_gray, dtype='int32')
             img_pooled = block_reduce(data, block_size=(self.pooling_dim, self.pooling_dim), func=np.max)
@@ -61,7 +65,11 @@ class Downsampler:
             quantized[(quantized > 154) & (quantized < 207)] = 182
             quantized[(quantized > 206) & (quantized < 256)] = 232
 
+            # save downsampled image if save_img is True
             if save_img: self.save_image(quantized, output_name)
+            # remove original screenshot image if clean_data is True
+            if clean_data: os.unlink(file_path)
+
             return quantized
         except:
             logger.error(traceback.format_exc())
