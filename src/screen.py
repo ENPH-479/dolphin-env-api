@@ -3,7 +3,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
+"""
+Grab screenshot of current game state and save to ~/.dolphin-emu/ScreenShots
+"""
 def get_screen():
     try:
         pyautogui.keyDown('f9')

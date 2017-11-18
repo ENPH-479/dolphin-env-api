@@ -12,7 +12,7 @@ from src import helper
 logger = logging.getLogger(__name__)
 
 
-class Downsampler():
+class Downsampler:
     def __init__(self, game_name, blur_size=25, intermediate_dim=300, final_dim=10):
         self.game_name = game_name
         self.blur_size = blur_size
