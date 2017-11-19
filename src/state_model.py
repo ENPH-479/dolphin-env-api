@@ -22,13 +22,14 @@ class StateModel:
         state_decision_map: Dictionary containing the state to decision probability mapping.
      """
 
-    def __init__(self, training_keylog="log.json", model_name="naive_model"):
+    def __init__(self, training_keylog="log.json", model_name="naive_model", clean_imgs=False):
         self.screenshot_dir = os.path.join(helper.get_home_folder(), '.dolphin-emu', 'ScreenShots')
         self.keylog_filename = training_keylog
         self.output_dir = helper.get_output_folder()
         self.image_dir = os.path.join(helper.get_output_folder(), "images")
         self.models_dir = os.path.join(helper.get_models_folder())
         self.model_name = model_name
+        self.clean_imgs = clean_imgs
         self.state_counts = dict()
         self.state_decision_map = dict()
         self.defaults = {k.name: 0 for k in keylog.Keyboard}
@@ -45,7 +46,8 @@ class StateModel:
                 count = state.get('count')
                 # Read the image data
                 image_file_name = "{}.png".format(count)
-                image_data = cv2.imread(os.path.join(self.image_dir, image_file_name))
+                img_path = os.path.join(self.image_dir, image_file_name)
+                image_data = cv2.imread(img_path)
                 image_single_channel = image_data[:, :, 1]
 
                 # Generate tuple from flattened image array as dict key.
@@ -66,6 +68,10 @@ class StateModel:
 
                 # Keep track of how many times we have seen each state in total
                 self.state_counts[key] = self.state_counts.setdefault(key, 0) + 1
+
+                # Delete downsampled image if True
+                if self.clean_imgs:
+                    os.unlink(img_path)
 
             # Laplace Smoothing for default actions
             num_states = sum(self.state_counts.values())
