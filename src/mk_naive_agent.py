@@ -49,25 +49,25 @@ class MarioKartAgent:
         screenshot_file = os.path.join(screenshot_path, 'NABE01-1.png')
 
         # Downsample the screenshot and calculate dictionary key
-        ds_image = mk_downsampler('NABE01', final_dim = 15).downsample(screenshot_file)
+        ds_image = mk_downsampler.Downsampler('NABE01', final_dim = 15).downsample(screenshot_file)
         state_key = tuple(ds_image.flatten())
 
         # Look up the game state to decide which action to take.
         if state_key in self.decision_map:
             # Choose which action to take using the key press probabilities in the decision map
             for key_name in self.decision_map[state_key]:
-                rand = rand.uniform(0,1)
-                if rand > self.decision_map[state_key][key_name]:
+                rand_num = random.uniform(0,1)
+                if rand_num > self.decision_map[state_key][key_name]:
                     self.key_states[key_name] = False
-                else
+                else:
                     self.key_states[key_name] = True
         else:
             # Choose which action to take using the key press probabilities in the default map
             for key_name in self.default_map[state_key]:
-                rand = rand.uniform(0,1)
-                if rand > self.default_map[state_key][key_name]:
+                rand_num = random.uniform(0,1)
+                if rand_num > self.default_map[state_key][key_name]:
                     self.key_states[key_name] = False
-                else
+                else:
                     self.key_states[key_name] = True
 
         # Send the updated key states to the Dolphin controller

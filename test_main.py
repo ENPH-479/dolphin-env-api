@@ -49,6 +49,10 @@ def test_key2pad():
     test.update(temp2)
     print(test.previous_keys)
 
+def test_process_frame():
+    """ Check that the basic Mario Kart AI can process a Dolphin screenshot and choose an action. """
+
+
 # Main function for entering tests
 def main():
     # test_dolphin_controller
