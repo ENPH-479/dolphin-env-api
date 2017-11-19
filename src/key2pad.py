@@ -13,29 +13,31 @@ class KeyPadMap:
                 self.updates_button = keys
                 return
             for key in keys:
+                # Ignore 'none'
                 if key == 'none':
                     continue
+                # Check for BUTTON
                 if (key not in (('left','right', 'up', 'down')) ) and (self.state[key] == True):
                     if self.updates_button[key]== False:
                         self.convert_key(key,is_press=1)
                         self.updates_button[key]=True
-                    #else:pass
+
                 elif (key not in (('left','right', 'up', 'down'))  ) and (self.state[key] == False):
                     if self.updates_button[key]== True:
                         self.convert_key(key,is_press=0)
                         self.updates_button[key]=False
-                    #else:pass
 
+                # Check for MAIN STICK
                 elif self.state[key] == False:
                     if self.updates_button[key]== True:
                         self.convert_key(key,is_press=0)
                         self.updates_button[key]=False
-                    #else:pass
+
                 else:
                     if self.updates_button[key]== False:
                         self.convert_key(key,is_press=1)
                         self.updates_button[key]=True
-                    #else:pass
+
 
 
 
@@ -67,13 +69,14 @@ class KeyPadMap:
         elif key == 'h':
             key_pad = dp_controller.Button.D_RIGHT
 
-
+        # PRESS/RELEASE
         if key_pad != dp_controller.Stick.MAIN:
             with dp_controller.DolphinController("~/.dolphin-emu/Pipes/pipe") as p:
                 if is_press==1:
                     p.press_button(key_pad)
                 else:
                     p.release_button(key_pad)
+        # SET STICK
         else:
             with dp_controller.DolphinController("~/.dolphin-emu/Pipes/pipe") as p:
                 if is_press==1:
@@ -90,6 +93,7 @@ class KeyPadMap:
                     p.set_stick(key_pad, x=0.5, y=0.5)
 
 
+#*** For testing ***
 temp={'left': True, 'right': False, 'up': False, 's': False, 'none': False, 'x': False, 'c': False, 'enter': False, 'down': True, 'd': False, 'z': False}
 test=KeyPadMap()
 test.update(temp)
