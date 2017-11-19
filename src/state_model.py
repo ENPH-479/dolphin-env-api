@@ -6,7 +6,7 @@ import json
 import cv2
 import pickle
 import os
-from src import helper
+from src import helper, keylog
 
 logger = logging.getLogger(__name__)
 
@@ -31,15 +31,16 @@ class StateModel:
         self.model_name = model_name
         self.state_counts = dict()
         self.state_decision_map = dict()
-        self.defaults = dict()
+        self.defaults = {k.name: 0 for k in keylog.Keyboard}
 
-    def populate_map(self):
-        """ Populate this state map. """
-        # Loop over all the output keylog/downsampled image pairs
+    def train(self):
+        """ Populate this state map with training data. """
+
         # Open and parse the .json keyboard log information
         with open(os.path.join(self.output_dir, self.keylog_filename), 'r') as keylog_file:
             key_log_data = json.load(keylog_file).get('data')
 
+            # Loop over all the output keylog/downsampled image pairs
             for state in key_log_data:
                 count = state.get('count')
                 # Read the image data
@@ -66,13 +67,21 @@ class StateModel:
                 # Keep track of how many times we have seen each state in total
                 self.state_counts[key] = self.state_counts.setdefault(key, 0) + 1
 
+            # Laplace Smoothing for default actions
+            num_states = sum(self.state_counts.values())
+            for value in self.state_decision_map.values():
+                for k in value:
+                    self.defaults[k] += value[k]
+            for k in self.defaults:
+                self.defaults[k] = (self.defaults[k] + 1) / (num_states + 2)
+
             # Convert entries to probabilities in the state decision map
             for k in self.state_decision_map:
                 for key_name in self.state_decision_map[k]:
                     self.state_decision_map[k][key_name] /= self.state_counts[k]
 
         # Update with previously pickled model
-        self.state_decision_map, self.defaults = self.update_prev_model()
+        self.state_decision_map, self.defaults, self.state_counts = self.update_prev_model()
 
         # Pickle the model and save it in models/
         self.pickle_model()
@@ -86,6 +95,7 @@ class StateModel:
                 pfile = pickle.load(mf)
                 model = pfile.get('model')
                 defaults = pfile.get('defaults')
+                state_counts = pfile.get('state_counts')
 
                 # avg model probabilities
                 for k, v in self.state_decision_map.items():
@@ -94,16 +104,21 @@ class StateModel:
                 # avg default key press probabilities
                 defaults = self._avg_key_probs(defaults, self.defaults)
 
-                return model, defaults
+                # add state counts
+                for k in self.state_counts:
+                    state_counts[k] = state_counts.setdefault(k, 0) + 1
+
+                return model, defaults, state_counts
 
         except FileNotFoundError:
             # no previous model found, return current model
-            return self.state_decision_map, self.defaults
+            return self.state_decision_map, self.defaults, self.state_counts
 
     def pickle_model(self):
+        """ Save model as a pickled file in models/ """
         model_output = os.path.join(self.models_dir, "{}.pickle".format(self.model_name))
         with open(model_output, 'wb') as m:
-            pfile = {"model": self.state_decision_map, "defaults": self.defaults}
+            pfile = {"model": self.state_decision_map, "defaults": self.defaults, "state_counts": self.state_counts}
             pickle.dump(pfile, m, pickle.HIGHEST_PROTOCOL)
 
     @staticmethod
