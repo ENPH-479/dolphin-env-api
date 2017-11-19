@@ -36,6 +36,23 @@ class MarioKartAgent:
         self.screenshot_folder = screenshot_folder
 
     def process_frame(self):
+        """ Process a single frame of the current Dolphin game.
+
+        Note:
+            Process means read the state of the game and decide what action to take in this context.
+        """
+        # Take screenshot of current Dolphin frame
+        dp_screenshot.take_screenshot()
+        screenshot_path = os.path.join(self.screenshot_dir, self.screenshot_folder)
+        screenshot_file = os.path.join(screenshot_path, 'NABE01-1.png')
+
+        # Downsample the screenshot
+        ds_image = mk_downsampler('NABE01', final_dim = 15).downsample(screenshot_file)
+        
+
+
+
+
 
 
     def run(self):
