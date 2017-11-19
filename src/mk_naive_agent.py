@@ -18,19 +18,24 @@ import random
 from src import dp_screenshot, helper, mk_downsampler, key2pad
 
 class MarioKartAgent:
-    """ Create a MarioKart Agent instance.
+    """ Class implementing a basic Mario Kart AI agent using conditional probability. """
 
-     Args:
-         pickled_model_path: Path to the stored state-decision model file
-     """
-    def __init__(self, pickled_model_path):
+    def __init__(self, pickled_model_path, screenshot_folder):
+        """ Create a MarioKart Agent instance.
+
+        Args:
+            pickled_model_path: Path to the stored state-decision model file.
+            screenshot_folder: Name of the folder where the current Dolphin game's screenshots are stored.
+        """
         saved_model_file = open(pickled_model_path, 'rb')
         saved_model_obj = pickle.load(saved_model_file)
         self.decision_map = saved_model_obj.get("model")
         self.default_map = saved_model_obj.get("defaults")
         saved_model_file.close()
         self.screenshot_dir = os.path.join(helper.get_home_folder(), '.dolphin-emu', 'ScreenShots')
-        self.screenshot_folder = 'NABE01'
+        self.screenshot_folder = screenshot_folder
+
+    def process_frame(self):
 
 
     def run(self):
