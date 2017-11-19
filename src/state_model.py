@@ -2,6 +2,7 @@
 
 import logging
 import json
+
 import cv2
 import pickle
 import os
@@ -21,12 +22,16 @@ class StateModel:
         state_decision_map: Dictionary containing the state to decision probability mapping.
      """
 
-    def __init__(self, keylog_filename="log.json"):
+    def __init__(self, training_keylog="log.json", model_name="naive_model"):
         self.screenshot_dir = os.path.join(helper.get_home_folder(), '.dolphin-emu', 'ScreenShots')
-        self.keylog_filename = keylog_filename
+        self.keylog_filename = training_keylog
         self.output_dir = helper.get_output_folder()
         self.image_dir = os.path.join(helper.get_output_folder(), "images")
+        self.models_dir = os.path.join(helper.get_models_folder())
+        self.model_name = model_name
+        self.state_counts = dict()
         self.state_decision_map = dict()
+        self.defaults = dict()
 
     def populate_map(self):
         """ Populate this state map. """
@@ -34,10 +39,6 @@ class StateModel:
         # Open and parse the .json keyboard log information
         with open(os.path.join(self.output_dir, self.keylog_filename), 'r') as keylog_file:
             key_log_data = json.load(keylog_file).get('data')
-
-            # Keep track of how many times we have seen each state in total
-            state_counts = dict()
-            num_states = 0
 
             for state in key_log_data:
                 count = state.get('count')
@@ -59,15 +60,55 @@ class StateModel:
                     # increment key press counts for current state
                     for k in key_map_numeric:
                         self.state_decision_map[key][k] += key_map_numeric[k]
-                    state_counts[key] += 1
                 else:
                     self.state_decision_map[key] = key_map_numeric
-                    state_counts[key] = 1
 
-            # Normalize the entries in the state decision map
+                # Keep track of how many times we have seen each state in total
+                self.state_counts[key] = self.state_counts.setdefault(key, 0) + 1
+
+            # Convert entries to probabilities in the state decision map
             for k in self.state_decision_map:
-                for key in self.state_decision_map[k]:
-                    self.state_decision_map[k][key] = self.state_decision_map[k][key] / state_counts[k]
+                for key_name in self.state_decision_map[k]:
+                    self.state_decision_map[k][key_name] /= self.state_counts[k]
 
-            # TODO update with previously pickled model
-            # TODO pickle the model and save it somewhere
+        # Update with previously pickled model
+        self.state_decision_map, self.defaults = self.update_prev_model()
+
+        # Pickle the model and save it in models/
+        self.pickle_model()
+
+    def update_prev_model(self):
+        """ Updates current trained model with previously saved model """
+        model_file = os.path.join(self.models_dir, "{}.pickle".format(self.model_name))
+        try:
+            # load model
+            with open(model_file, 'rb') as mf:
+                pfile = pickle.load(mf)
+                model = pfile.get('model')
+                defaults = pfile.get('defaults')
+
+                # avg model probabilities
+                for k, v in self.state_decision_map.items():
+                    model[k] = self._avg_key_probs(model[k], v) if model.get(k) else v
+
+                # avg default key press probabilities
+                defaults = self._avg_key_probs(defaults, self.defaults)
+
+                return model, defaults
+
+        except FileNotFoundError:
+            # no previous model found, return current model
+            return self.state_decision_map, self.defaults
+
+    def pickle_model(self):
+        model_output = os.path.join(self.models_dir, "{}.pickle".format(self.model_name))
+        with open(model_output, 'wb') as m:
+            pfile = {"model": self.state_decision_map, "defaults": self.defaults}
+            pickle.dump(pfile, m, pickle.HIGHEST_PROTOCOL)
+
+    @staticmethod
+    def _avg_key_probs(key_set_1, key_set_2):
+        new_keys = dict()
+        for key in key_set_1:
+            new_keys[key] = (key_set_1[key] + key_set_2[key]) / 2.0
+        return new_keys

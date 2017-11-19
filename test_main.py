@@ -33,6 +33,7 @@ def test_state_map_population():
     """ Check that a state decision map can be properly populated from images and key logs. """
     map = state_model.StateModel()
     map.populate_map()
+    print(map.state_decision_map)
     print(len(map.state_decision_map))
 
 
