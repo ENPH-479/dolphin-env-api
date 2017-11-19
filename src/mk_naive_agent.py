@@ -15,29 +15,24 @@ The basic Mario Kart AI agent functions as follows:
 import pickle
 import os
 import random
-from src import dp_screenshot, helper, mk_downsampler
+from src import dp_screenshot, helper, mk_downsampler, key2pad
 
 class MarioKartAgent:
-    """  """
+    """ Create a MarioKart Agent instance.
+
+     Args:
+         pickled_model_path: Path to the stored state-decision model file
+     """
     def __init__(self, pickled_model_path):
-
-
-
-
-
-
-
-
-
-
-
-        saved_file = open(pickled_model_path, 'rb')
-        saved_obj = pickle.load(saved_file)
-        self.model = saved_obj.get("model")
-        self.defaults = saved_obj.get("defaults")
-        saved_file.close()
+        saved_model_file = open(pickled_model_path, 'rb')
+        saved_model_obj = pickle.load(saved_model_file)
+        self.decision_map = saved_model_obj.get("model")
+        self.default_map = saved_model_obj.get("defaults")
+        saved_model_file.close()
         self.screenshot_dir = os.path.join(helper.get_home_folder(), '.dolphin-emu', 'ScreenShots')
-        self.game_name = 'NABE01'
+        self.screenshot_folder = 'NABE01'
+
+
     def run(self):
         # TODO complete
         # take screenshot
