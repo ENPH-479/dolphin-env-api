@@ -3,40 +3,38 @@ from src import dp_controller
 
 class KeyPadMap:
     def __init__(self):
-        self.state = dict((el.name, False) for el in keylog.Keyboard)
-        self.updates_button ={}#= {'left': False, 'right': False, 'up': False, 's': False, 'none': False, 'x': False, 'c': False, 'enter': False, 'down': False, 'd': False, 'z': False}
+        self.previous_keys =dict((el.name, False) for el in keylog.Keyboard)
     def update(self, keys):
         # TODO track which keys are pressed and which are released.
         # TODO track 'toggled' MAIN stick positions as well.
-            self.state=keys
-            if self.updates_button == {}:
-                self.updates_button = keys
+            if self.previous_keys == {}:
+                self.previous_keys = keys
                 return
             for key in keys:
                 # Ignore 'none'
                 if key == 'none':
                     continue
                 # Check for BUTTON
-                if (key not in (('left','right', 'up', 'down')) ) and (self.state[key] == True):
-                    if self.updates_button[key]== False:
-                        self.convert_key(key,is_press=1)
-                        self.updates_button[key]=True
-
-                elif (key not in (('left','right', 'up', 'down'))  ) and (self.state[key] == False):
-                    if self.updates_button[key]== True:
-                        self.convert_key(key,is_press=0)
-                        self.updates_button[key]=False
+                if (key not in (('left','right', 'up', 'down')) ):
+                    if keys[key]== True:
+                        if self.previous_keys[key]== False:
+                            self.convert_key(key,is_press=1)
+                            self.previous_keys[key]=True
+                    else:
+                        if self.previous_keys[key]== True:
+                            self.convert_key(key,is_press=0)
+                            self.previous_keys[key]=False
 
                 # Check for MAIN STICK
-                elif self.state[key] == False:
-                    if self.updates_button[key]== True:
+                elif keys[key] == False:
+                    if self.previous_keys[key]== True:
                         self.convert_key(key,is_press=0)
-                        self.updates_button[key]=False
+                        self.previous_keys[key]=False
 
                 else:
-                    if self.updates_button[key]== False:
+                    if self.previous_keys[key]== False:
                         self.convert_key(key,is_press=1)
-                        self.updates_button[key]=True
+                        self.previous_keys[key]=True
 
 
 
@@ -91,13 +89,3 @@ class KeyPadMap:
 
                 else:
                     p.set_stick(key_pad, x=0.5, y=0.5)
-
-
-#*** For testing ***
-temp={'left': True, 'right': False, 'up': False, 's': False, 'none': False, 'x': False, 'c': False, 'enter': False, 'down': True, 'd': False, 'z': False}
-test=KeyPadMap()
-test.update(temp)
-print(test.updates_button)
-temp2={'left': False, 'right': True, 'up': True, 's': True, 'none': True, 'x': True, 'c': True, 'enter': False, 'down': True, 'd': False, 'z': False}
-test.update(temp2)
-print(test.updates_button)

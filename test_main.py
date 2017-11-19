@@ -4,7 +4,7 @@
 
 import logging
 import time
-from src import dp_controller, keylog, mk_downsampler, state_model
+from src import dp_controller, keylog, mk_downsampler, state_model, key2pad
 
 # Configure logger
 logging.basicConfig(format='%(name)s:%(filename)s:%(lineno)d:%(message)s', level=logging.INFO)
@@ -38,14 +38,24 @@ def test_state_map_population():
     print(model.state_counts)
     print(len(model.state_decision_map))
 
+def test_key2pad():
+    temp = {'left': True, 'right': False, 'up': False, 's': False, 'none': False, 'x': False, 'c': False,
+            'enter': False, 'down': True, 'd': False, 'z': False}
+    test = key2pad.KeyPadMap()
+    test.update(temp)
+    print(test.previous_keys)
+    temp2 = {'left': False, 'right': True, 'up': True, 's': True, 'none': True, 'x': True, 'c': True, 'enter': False,
+             'down': True, 'd': False, 'z': False}
+    test.update(temp2)
+    print(test.previous_keys)
 
 # Main function for entering tests
 def main():
     # test_dolphin_controller
     # test_mario_kart_downsampler()
     # test_key_logging()
-    test_state_map_population()
-
+    # test_state_map_population()
+    test_key2pad()
 
 if __name__ == '__main__':
     main()
