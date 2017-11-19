@@ -5,32 +5,33 @@ from src import dp_controller
 class KeyPadMap:
     def __init__(self):
         self.state = dict((el.name, False) for el in keylog.Keyboard)
+        self.updates_button = {'left': False, 'right': False, 'up': False, 's': False, 'none': False, 'x': False, 'c': False, 'enter': False, 'down': False, 'd': False, 'z': False}
 
     def update(self, keys):
         # TODO track which keys are pressed and which are released.
         # TODO track 'toggled' MAIN stick positions as well.
-        updates_button = []
+
         for key in keys:
-            if (key=='left' or 'right'or 'up' or 'down') &self.state[key] == 0:
-                if updates_button[key]== 1:
+            if (key=='left' or 'right'or 'up' or 'down') and self.state[key] == 0:
+                if self.updates_button[key]== 1:
                     self.convert_key(key,is_press=1)
-                    updates_button.insert(key,1)
+                    self.updates_button[key]=1
                 else:pass
-            elif (key=='left' or 'right'or 'up' or 'down') &self.state[key] == 1:
-                if updates_button[key]== 0:
+            elif (key=='left' or 'right'or 'up' or 'down') and self.state[key] == 1:
+                if self.updates_button[key]== 0:
                     self.convert_key(key,is_press=0)
-                    updates_button.insert(key,0)
+                    self.updates_button[key]=0
                 else:pass
 
             elif self.state[key] == 0:
-                if updates_button[key]== 1:
+                if self.updates_button[key]== 1:
                     self.convert_key(key,is_press=1)
-                    updates_button.insert(key,1)
+                    self.updates_button[key]=1
                 else:pass
             else:
-                if updates_button[key]== 0:
+                if self.updates_button[key]== 0:
                     self.convert_key(key,is_press=0)
-                    updates_button.insert(key,0)
+                    self.updates_button[key]=0
                 else:pass
 
 
@@ -82,3 +83,9 @@ class KeyPadMap:
 
             else:
                 dp_controller.DolphinController.set_stick(key_pad, 0.5, 0.5)
+
+
+temp={'left': False, 'right': True, 'up': False, 's': False, 'none': False, 'x': True, 'c': False, 'enter': False, 'down': False, 'd': False, 'z': False}
+test=KeyPadMap()
+test.update(temp)
+print(test.state)
