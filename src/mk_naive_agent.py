@@ -34,6 +34,8 @@ class MarioKartAgent:
         saved_model_file.close()
         self.screenshot_dir = os.path.join(helper.get_home_folder(), '.dolphin-emu', 'ScreenShots')
         self.screenshot_folder = screenshot_folder
+        self.key_map = key2pad.KeyPadMap()
+        self.key_states = dict()
 
     def process_frame(self):
         """ Process a single frame of the current Dolphin game.
@@ -46,30 +48,31 @@ class MarioKartAgent:
         screenshot_path = os.path.join(self.screenshot_dir, self.screenshot_folder)
         screenshot_file = os.path.join(screenshot_path, 'NABE01-1.png')
 
-        # Downsample the screenshot
+        # Downsample the screenshot and calculate dictionary key
         ds_image = mk_downsampler('NABE01', final_dim = 15).downsample(screenshot_file)
-        
+        state_key = tuple(ds_image.flatten())
 
+        # Look up the game state to decide which action to take.
+        if state_key in self.decision_map:
+            # Choose which action to take using the key press probabilities in the decision map
+            for key_name in self.decision_map[state_key]:
+                rand = rand.uniform(0,1)
+                if rand > self.decision_map[state_key][key_name]:
+                    self.key_states[key_name] = False
+                else
+                    self.key_states[key_name] = True
+        else:
+            # Choose which action to take using the key press probabilities in the default map
+            for key_name in self.default_map[state_key]:
+                rand = rand.uniform(0,1)
+                if rand > self.default_map[state_key][key_name]:
+                    self.key_states[key_name] = False
+                else
+                    self.key_states[key_name] = True
 
+        # Send the updated key states to the Dolphin controller
+        self.key_map.update(self.key_states)
 
+        # Cleanup the Dolphin screenshot folder
+        os.remove(screenshot_path)
 
-
-
-    def run(self):
-        # TODO complete
-        # take screenshot
-        screen.get_screen()
-        # load img
-        screen_dir = os.path.join(self.screenshot_dir, self.game_name)
-
-        # downsample
-        downsampling.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
-        # look up game state
-
-        # generate random number [0,1]
-        rand=random.uniform(0,1)
-        # take diff of key press state - update with current pressed keys
-        # update controller inputs through pipe
-        # delete screenshot?
-        os.remove(os.path.join(self.screenshot_dir, self.game_name))
-        pass

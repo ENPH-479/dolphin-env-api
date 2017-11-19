@@ -2,8 +2,11 @@ import src.keylog as keylog
 from src import dp_controller
 
 class KeyPadMap:
+
     def __init__(self):
         self.previous_keys =dict((el.name, False) for el in keylog.Keyboard)
+
+
     def update(self, keys):
         # TODO track which keys are pressed and which are released.
         # TODO track 'toggled' MAIN stick positions as well.
@@ -35,8 +38,6 @@ class KeyPadMap:
                     if self.previous_keys[key]== False:
                         self.convert_key(key,is_press=1)
                         self.previous_keys[key]=True
-
-
 
 
     def convert_key(self, key, is_press):
