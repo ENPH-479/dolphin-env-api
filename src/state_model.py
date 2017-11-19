@@ -21,9 +21,9 @@ class StateModel:
         state_decision_map: Dictionary containing the state to decision probability mapping.
      """
 
-    def __init__(self, keylog_file="log.json"):
+    def __init__(self, keylog_filename="log.json"):
         self.screenshot_dir = os.path.join(helper.get_home_folder(), '.dolphin-emu', 'ScreenShots')
-        self.keylog_filename = keylog_file
+        self.keylog_filename = keylog_filename
         self.output_dir = helper.get_output_folder()
         self.image_dir = os.path.join(helper.get_output_folder(), "images")
         self.state_decision_map = dict()
@@ -31,50 +31,43 @@ class StateModel:
     def populate_map(self):
         """ Populate this state map. """
         # Loop over all the output keylog/downsampled image pairs
-        num_files = len(os.listdir(self.image_dir))
-        count = 0
         # Open and parse the .json keyboard log information
-        with open(os.path.join(self.output_dir, self.keylog_filename), 'r') as key_log_file:
-            key_log_data = json.load(key_log_file)
+        with open(os.path.join(self.output_dir, self.keylog_filename), 'r') as keylog_file:
+            key_log_data = json.load(keylog_file).get('data')
 
             # Keep track of how many times we have seen each state in total
             state_counts = dict()
+            num_states = 0
 
-            # Process the downsampled images one by one
-            while count <= num_files:
-                count += 1
+            for state in key_log_data:
+                count = state.get('count')
                 # Read the image data
                 image_file_name = "{}.png".format(count)
                 image_data = cv2.imread(os.path.join(self.image_dir, image_file_name))
-                # Generate a tuple from the image so we can hash
-                image_serialized = pickle.dumps(image_data, protocol=0)
+                image_single_channel = image_data[:, :, 1]
 
-                # Parse the key log .json dictionaries
-                key_map_boolean = key_log_data['data'][count]['presses']
-                key_map_numeric = dict()
+                # Generate tuple from flattened image array as dict key.
+                key = tuple(image_single_channel.flatten())
 
+                # fetch key presses for current frame from log.json
+                key_map_boolean = state.get('presses')
                 # Convert "true" entries to 1 and "false" entries to 0
-                for k in key_map_boolean:
-                    if key_map_boolean[k] == True:
-                        key_map_numeric[k] = 1
-
-                    elif key_map_boolean[k] == False:
-                        key_map_numeric[k] = 0
+                key_map_numeric = {k: 1 if key_map_boolean[k] else 0 for k in key_map_boolean}
 
                 # Check if the state already exists in the state map
-                if image_serialized in self.state_decision_map:
-
-                    for k in self.state_decision_map[image_serialized]:
-                        if key_map_numeric[k] == 1:
-                            self.state_decision_map[image_serialized][k] += 1
-
-                    state_counts[image_serialized] += 1
-
+                if key in self.state_decision_map:
+                    # increment key press counts for current state
+                    for k in key_map_numeric:
+                        self.state_decision_map[key][k] += key_map_numeric[k]
+                    state_counts[key] += 1
                 else:
-                    self.state_decision_map[image_serialized] = key_map_numeric
-                    state_counts[image_serialized] = 1
+                    self.state_decision_map[key] = key_map_numeric
+                    state_counts[key] = 1
 
             # Normalize the entries in the state decision map
             for k in self.state_decision_map:
                 for key in self.state_decision_map[k]:
                     self.state_decision_map[k][key] = self.state_decision_map[k][key] / state_counts[k]
+
+            # TODO update with previously pickled model
+            # TODO pickle the model and save it somewhere

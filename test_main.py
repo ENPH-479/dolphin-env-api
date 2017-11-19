@@ -18,7 +18,7 @@ def test_dolphin_controller():
         time.sleep(0.1)
 
 
-def test_basic_Mario_Kart_downsampler():
+def test_mario_kart_downsampler():
     """ Check that the basic Mario Kart image downsampler can process images saved by Dolphin. """
     mk_downsampler.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
 
@@ -33,15 +33,15 @@ def test_state_map_population():
     """ Check that a state decision map can be properly populated from images and key logs. """
     map = state_model.StateModel()
     map.populate_map()
-    map.state_decision_map
+    print(len(map.state_decision_map))
 
 
 # Main function for entering tests
 def main():
     # test_dolphin_controller
-    # test_basic_Mario_Kart_downsampler()
-    test_key_logging()
-    # test_state_map_population()
+    # test_mario_kart_downsampler()
+    # test_key_logging()
+    test_state_map_population()
 
 
 if __name__ == '__main__':
