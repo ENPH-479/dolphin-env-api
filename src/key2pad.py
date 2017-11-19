@@ -1,38 +1,41 @@
 import src.keylog as keylog
 from src import dp_controller
 
-
 class KeyPadMap:
     def __init__(self):
         self.state = dict((el.name, False) for el in keylog.Keyboard)
-        self.updates_button = {'left': False, 'right': False, 'up': False, 's': False, 'none': False, 'x': False, 'c': False, 'enter': False, 'down': False, 'd': False, 'z': False}
-
+        self.updates_button ={}#= {'left': False, 'right': False, 'up': False, 's': False, 'none': False, 'x': False, 'c': False, 'enter': False, 'down': False, 'd': False, 'z': False}
     def update(self, keys):
         # TODO track which keys are pressed and which are released.
         # TODO track 'toggled' MAIN stick positions as well.
+            self.state=keys
+            if self.updates_button == {}:
+                self.updates_button = keys
+                return
+            for key in keys:
+                if key == 'none':
+                    continue
+                if (key not in (('left','right', 'up', 'down')) ) and (self.state[key] == True):
+                    if self.updates_button[key]== False:
+                        self.convert_key(key,is_press=1)
+                        self.updates_button[key]=True
+                    #else:pass
+                elif (key not in (('left','right', 'up', 'down'))  ) and (self.state[key] == False):
+                    if self.updates_button[key]== True:
+                        self.convert_key(key,is_press=0)
+                        self.updates_button[key]=False
+                    #else:pass
 
-        for key in keys:
-            if (key=='left' or 'right'or 'up' or 'down') and self.state[key] == 0:
-                if self.updates_button[key]== 1:
-                    self.convert_key(key,is_press=1)
-                    self.updates_button[key]=1
-                else:pass
-            elif (key=='left' or 'right'or 'up' or 'down') and self.state[key] == 1:
-                if self.updates_button[key]== 0:
-                    self.convert_key(key,is_press=0)
-                    self.updates_button[key]=0
-                else:pass
-
-            elif self.state[key] == 0:
-                if self.updates_button[key]== 1:
-                    self.convert_key(key,is_press=1)
-                    self.updates_button[key]=1
-                else:pass
-            else:
-                if self.updates_button[key]== 0:
-                    self.convert_key(key,is_press=0)
-                    self.updates_button[key]=0
-                else:pass
+                elif self.state[key] == False:
+                    if self.updates_button[key]== True:
+                        self.convert_key(key,is_press=0)
+                        self.updates_button[key]=False
+                    #else:pass
+                else:
+                    if self.updates_button[key]== False:
+                        self.convert_key(key,is_press=1)
+                        self.updates_button[key]=True
+                    #else:pass
 
 
 
@@ -66,26 +69,31 @@ class KeyPadMap:
 
 
         if key_pad != dp_controller.Stick.MAIN:
-            if is_press==True:
-                dp_controller.DolphinController.press_button(key_pad)
-            else:
-                dp_controller.DolphinController.release_button(key_pad)
+            with dp_controller.DolphinController("~/.dolphin-emu/Pipes/pipe") as p:
+                if is_press==1:
+                    p.press_button(key_pad)
+                else:
+                    p.release_button(key_pad)
         else:
-            if is_press==True:
-                if key=='left':
-                    dp_controller.DolphinController.set_stick(key_pad,-1,0.5)
-                elif key=='right':
-                    dp_controller.DolphinController.set_stick(key_pad, 1,0.5)
-                elif key=='up':
-                    dp_controller.DolphinController.set_stick(key_pad, 0.5,1)
-                elif key=='down':
-                    dp_controller.DolphinController.set_stick(key_pad, 0.5,-1)
+            with dp_controller.DolphinController("~/.dolphin-emu/Pipes/pipe") as p:
+                if is_press==1:
+                    if key=='left':
+                        p.set_stick(key_pad,x=0,y=0.5)
+                    elif key=='right':
+                        p.set_stick(key_pad, x=1,y=0.5)
+                    elif key=='up':
+                        p.set_stick(key_pad, x=0.5,y=1)
+                    elif key=='down':
+                        p.set_stick(key_pad, x=0.5,y=0)
 
-            else:
-                dp_controller.DolphinController.set_stick(key_pad, 0.5, 0.5)
+                else:
+                    p.set_stick(key_pad, x=0.5, y=0.5)
 
 
-temp={'left': False, 'right': True, 'up': False, 's': False, 'none': False, 'x': True, 'c': False, 'enter': False, 'down': False, 'd': False, 'z': False}
+temp={'left': True, 'right': False, 'up': False, 's': False, 'none': False, 'x': False, 'c': False, 'enter': False, 'down': True, 'd': False, 'z': False}
 test=KeyPadMap()
 test.update(temp)
-print(test.state)
+print(test.updates_button)
+temp2={'left': False, 'right': True, 'up': True, 's': True, 'none': True, 'x': True, 'c': True, 'enter': False, 'down': True, 'd': False, 'z': False}
+test.update(temp2)
+print(test.updates_button)

@@ -144,3 +144,4 @@ class DolphinController:
             self.set_trigger(trigger, 0)
         for stick in Stick:
             self.set_stick(stick, 0.5, 0.5)
+
