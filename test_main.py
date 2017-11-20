@@ -63,7 +63,8 @@ def main():
     # test_mario_kart_downsampler()
     # test_key_logging()
     # test_state_map_population()
-    test_key2pad()
+    # test_key2pad()
+    test_process_frame()
 
 if __name__ == '__main__':
     main()
