@@ -4,7 +4,8 @@
 
 import logging
 import time
-from src import dp_controller, keylog, mk_downsampler, state_model, key2pad
+import os
+from src import dp_controller, keylog, mk_downsampler, state_model, key2pad, mk_naive_agent, helper
 
 # Configure logger
 logging.basicConfig(format='%(name)s:%(filename)s:%(lineno)d:%(message)s', level=logging.INFO)
@@ -51,6 +52,9 @@ def test_key2pad():
 
 def test_process_frame():
     """ Check that the basic Mario Kart AI can process a Dolphin screenshot and choose an action. """
+    agent = mk_naive_agent.MarioKartAgent(os.path.join(helper.get_models_folder(), "naive_model.pickle" ), 'NABE01')
+    while True:
+        agent.process_frame()
 
 
 # Main function for entering tests
