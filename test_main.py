@@ -19,15 +19,15 @@ def test_dolphin_controller():
         time.sleep(0.1)
 
 
-def test_mario_kart_downsampler():
-    """ Check that the basic Mario Kart image downsampler can process images saved by Dolphin. """
-    mk_downsampler.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
-
-
 def test_key_logging():
     """ Check that keyboard input can be successfully logged to a .json file. """
     k = keylog.KeyLog()
     k.start()
+
+
+def test_mario_kart_downsampler():
+    """ Check that the basic Mario Kart image downsampler can process images saved by Dolphin. """
+    mk_downsampler.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
 
 
 def test_state_map_population():
@@ -62,8 +62,8 @@ def test_process_frame():
 # Main function for entering tests
 def main():
     # test_dolphin_controller
-    # test_mario_kart_downsampler()
     # test_key_logging()
+    # test_mario_kart_downsampler()
     # test_state_map_population()
     # test_key2pad()
     test_process_frame()

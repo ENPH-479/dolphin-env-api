@@ -25,7 +25,7 @@ class MarioKartAgent:
     """ Class implementing a basic Mario Kart AI agent using conditional probability. """
     game_name = "NABE01"
 
-    def __init__(self, pickled_model_path, delay=0.3):
+    def __init__(self, pickled_model_path, delay=0.2):
         """ Create a MarioKart Agent instance.
 
         Args:
@@ -61,6 +61,7 @@ class MarioKartAgent:
         try:
             # Downsample the screenshot and calculate dictionary key
             ds_image = mk_downsampler.Downsampler(self.game_name, final_dim=15).downsample(screenshot_file)
+
             state_key = helper.generate_img_key(ds_image)
 
             # Look up the game state to decide which action to take.

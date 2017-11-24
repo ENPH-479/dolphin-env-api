@@ -1,8 +1,9 @@
 """ Module containing miscellaneous helper functions. """
-
+import logging
 import re
 import os
 
+logger = logging.getLogger(__name__)
 fkey_pattern = re.compile(r'^F(\d{1,2})$', re.I)
 
 
@@ -37,4 +38,7 @@ def generate_img_key(image):
         image_single_channel = image[:, :, 1]
     except IndexError:
         image_single_channel = image
+    except TypeError:
+        logger.warning("Image key not generated.")
+        return None
     return tuple(image_single_channel.flatten())
