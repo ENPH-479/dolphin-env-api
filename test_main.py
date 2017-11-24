@@ -32,11 +32,9 @@ def test_mario_kart_downsampler():
 
 def test_state_map_population():
     """ Check that a state decision map can be properly populated from images and key logs. """
-    model = state_model.StateModel()
+    model = state_model.StateModel(clean_imgs=True)
     model.train()
-    print(model.state_decision_map)
     print(model.defaults)
-    print(model.state_counts)
     print(len(model.state_decision_map))
 
 

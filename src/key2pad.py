@@ -69,19 +69,18 @@ class KeyPadMap:
 
         # PRESS/RELEASE
         if key_pad != dp_controller.Stick.MAIN:
-            # with dp_controller.DolphinController("~/.dolphin-emu/Pipes/pipe") as p:
             if is_press == 1:
                 self.p.press_button(key_pad)
             else:
                 self.p.release_button(key_pad)
         # SET STICK
         else:
-            # with dp_controller.DolphinController("~/.dolphin-emu/Pipes/pipe") as p:
+
             if is_press == 1:
                 if key == 'left':
-                    self.p.set_stick(key_pad, x=0, y=0.5)
+                    self.p.set_stick(key_pad, x=0.3, y=0.5)
                 elif key == 'right':
-                    self.p.set_stick(key_pad, x=1, y=0.5)
+                    self.p.set_stick(key_pad, x=0.7, y=0.5)
                 elif key == 'up':
                     self.p.set_stick(key_pad, x=0.5, y=1)
                 elif key == 'down':
