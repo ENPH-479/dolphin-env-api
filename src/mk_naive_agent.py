@@ -23,8 +23,9 @@ logger = logging.getLogger(__name__)
 
 class MarioKartAgent:
     """ Class implementing a basic Mario Kart AI agent using conditional probability. """
+    game_name = "NABE01"
 
-    def __init__(self, pickled_model_path, screenshot_folder, delay=0.3):
+    def __init__(self, pickled_model_path, delay=0.3):
         """ Create a MarioKart Agent instance.
 
         Args:
@@ -36,9 +37,9 @@ class MarioKartAgent:
         self.decision_map = saved_model_obj.get("model")
         self.default_map = saved_model_obj.get("defaults")
         saved_model_file.close()
+
         self.frame_delay = delay
-        self.screenshot_dir = os.path.join(helper.get_home_folder(), '.dolphin-emu', 'ScreenShots')
-        self.screenshot_folder = screenshot_folder
+        self.screenshot_dir = os.path.join(helper.get_home_folder(), '.dolphin-emu', 'ScreenShots', self.game_name)
         self.key_map = key2pad.KeyPadMap()
         self.key_states = dict()
 
@@ -54,13 +55,12 @@ class MarioKartAgent:
 
         # Take screenshot of current Dolphin frame
         dp_screenshot.take_screenshot()
-        screenshot_path = os.path.join(self.screenshot_dir, self.screenshot_folder)
-        screenshot_file = os.path.join(screenshot_path, 'NABE01-1.png')
+        screenshot_file = os.path.join(self.screenshot_dir, 'NABE01-1.png')
         time.sleep(self.frame_delay)
 
         try:
             # Downsample the screenshot and calculate dictionary key
-            ds_image = mk_downsampler.Downsampler('NABE01', final_dim=15).downsample(screenshot_file)
+            ds_image = mk_downsampler.Downsampler(self.game_name, final_dim=15).downsample(screenshot_file)
             state_key = helper.generate_img_key(ds_image)
 
             # Look up the game state to decide which action to take.
@@ -68,23 +68,17 @@ class MarioKartAgent:
                 # Choose which action to take using the key press probabilities in the decision map
                 for key_name in self.decision_map[state_key]:
                     rand_num = random.uniform(0, 1)
-                    if rand_num > self.decision_map[state_key][key_name]:
-                        self.key_states[key_name] = False
-                    else:
-                        self.key_states[key_name] = True
+                    self.key_states[key_name] = self.decision_map[state_key][key_name] > rand_num
             else:
                 # Choose which action to take using the key press probabilities in the default map
                 for key_name in self.default_map:
                     rand_num = random.uniform(0, 1)
-                    if rand_num > self.default_map[key_name]:
-                        self.key_states[key_name] = False
-                    else:
-                        self.key_states[key_name] = True
+                    self.key_states[key_name] = self.default_map[key_name] > rand_num
 
-            # Send the updated key states to the Dolphin controller
+            # Send updated key states to the Dolphin controller
             self.key_map.update(self.key_states)
 
-            # Cleanup the Dolphin screenshot folder
-            os.remove(screenshot_file)
+            # Delete used screenshot file
+            os.unlink(screenshot_file)
         except (IOError, FileNotFoundError):
             logger.warning("Screenshot not found, skipping frame.")

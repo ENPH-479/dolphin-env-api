@@ -54,7 +54,7 @@ def test_key2pad():
 
 def test_process_frame():
     """ Check that the basic Mario Kart AI can process a Dolphin screenshot and choose an action. """
-    agent = mk_naive_agent.MarioKartAgent(os.path.join(helper.get_models_folder(), "naive_model.pickle"), 'NABE01')
+    agent = mk_naive_agent.MarioKartAgent(os.path.join(helper.get_models_folder(), "naive_model.pickle"))
     while True:
         agent.process_frame()
 

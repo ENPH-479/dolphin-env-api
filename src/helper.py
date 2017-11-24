@@ -33,5 +33,8 @@ def get_home_folder():
 
 
 def generate_img_key(image):
-    image_single_channel = image[:, :, 1]
+    try:
+        image_single_channel = image[:, :, 1]
+    except IndexError:
+        image_single_channel = image
     return tuple(image_single_channel.flatten())
