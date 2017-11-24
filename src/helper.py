@@ -30,3 +30,8 @@ def get_models_folder():
 
 def get_home_folder():
     return os.path.expanduser('~')
+
+
+def generate_img_key(image):
+    image_single_channel = image[:, :, 1]
+    return tuple(image_single_channel.flatten())

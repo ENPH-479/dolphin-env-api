@@ -48,10 +48,9 @@ class StateModel:
                 image_file_name = "{}.png".format(count)
                 img_path = os.path.join(self.image_dir, image_file_name)
                 image_data = cv2.imread(img_path)
-                image_single_channel = image_data[:, :, 1]
 
                 # Generate tuple from flattened image array as dict key.
-                key = tuple(image_single_channel.flatten())
+                key = helper.generate_img_key(image_data)
 
                 # fetch key presses for current frame from log.json
                 key_map_boolean = state.get('presses')

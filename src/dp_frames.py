@@ -5,6 +5,7 @@ import pyautogui
 
 logger = logging.getLogger(__name__)
 
+
 def advance(slot_key):
     """ Advance the state of the running Dolphin emulator by a single frame.
 
@@ -17,6 +18,7 @@ def advance(slot_key):
         pyautogui.keyUp(slot_key)
     except (AssertionError, TypeError):
         logger.exception("Error advancing frame {}:".format(slot_key))
+
 
 def inc_speed(slot_key):
     """ Increase the frame advance speed of the running Dolphin emulator.
@@ -31,6 +33,7 @@ def inc_speed(slot_key):
     except (AssertionError, TypeError):
         logger.exception("Error increasing speed {}:".format(slot_key))
 
+
 def dec_speed(slot_key):
     """ Decrease the frame advance speed of the running Dolphin emulator.
 
@@ -43,6 +46,7 @@ def dec_speed(slot_key):
         pyautogui.keyUp(slot_key)
     except (AssertionError, TypeError):
         logger.exception("Error decreasing speed {}:".format(slot_key))
+
 
 def res_speed(slot_key):
     """ Reset the frame advance speed of the running Dolphin emulator to the default speed.

@@ -11,17 +11,20 @@ The basic Mario Kart AI agent functions as follows:
         fifo pipes and advancing the game by 1 frame, at which point the process starts again based on the next frame
         (state)
 """
-
+import logging
 import pickle
 import os
 import time
 import random
 from src import dp_screenshot, helper, mk_downsampler, key2pad, dp_frames
 
+logger = logging.getLogger(__name__)
+
+
 class MarioKartAgent:
     """ Class implementing a basic Mario Kart AI agent using conditional probability. """
 
-    def __init__(self, pickled_model_path, screenshot_folder):
+    def __init__(self, pickled_model_path, screenshot_folder, delay=0.3):
         """ Create a MarioKart Agent instance.
 
         Args:
@@ -33,6 +36,7 @@ class MarioKartAgent:
         self.decision_map = saved_model_obj.get("model")
         self.default_map = saved_model_obj.get("defaults")
         saved_model_file.close()
+        self.frame_delay = delay
         self.screenshot_dir = os.path.join(helper.get_home_folder(), '.dolphin-emu', 'ScreenShots')
         self.screenshot_folder = screenshot_folder
         self.key_map = key2pad.KeyPadMap()
@@ -52,18 +56,18 @@ class MarioKartAgent:
         dp_screenshot.take_screenshot()
         screenshot_path = os.path.join(self.screenshot_dir, self.screenshot_folder)
         screenshot_file = os.path.join(screenshot_path, 'NABE01-1.png')
-        time.sleep(0.3)
+        time.sleep(self.frame_delay)
 
-        if os.path.isfile(screenshot_file):
+        try:
             # Downsample the screenshot and calculate dictionary key
-            ds_image = mk_downsampler.Downsampler('NABE01', final_dim = 15).downsample(screenshot_file)
-            state_key = tuple(ds_image.flatten())
+            ds_image = mk_downsampler.Downsampler('NABE01', final_dim=15).downsample(screenshot_file)
+            state_key = helper.generate_img_key(ds_image)
 
             # Look up the game state to decide which action to take.
             if state_key in self.decision_map:
                 # Choose which action to take using the key press probabilities in the decision map
                 for key_name in self.decision_map[state_key]:
-                    rand_num = random.uniform(0,1)
+                    rand_num = random.uniform(0, 1)
                     if rand_num > self.decision_map[state_key][key_name]:
                         self.key_states[key_name] = False
                     else:
@@ -71,7 +75,7 @@ class MarioKartAgent:
             else:
                 # Choose which action to take using the key press probabilities in the default map
                 for key_name in self.default_map:
-                    rand_num = random.uniform(0,1)
+                    rand_num = random.uniform(0, 1)
                     if rand_num > self.default_map[key_name]:
                         self.key_states[key_name] = False
                     else:
@@ -82,4 +86,5 @@ class MarioKartAgent:
 
             # Cleanup the Dolphin screenshot folder
             os.remove(screenshot_file)
-
+        except (IOError, FileNotFoundError):
+            logger.warning("Screenshot not found, skipping frame.")

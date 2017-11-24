@@ -39,6 +39,7 @@ def test_state_map_population():
     print(model.state_counts)
     print(len(model.state_decision_map))
 
+
 def test_key2pad():
     temp = {'left': True, 'right': False, 'up': False, 's': False, 'none': False, 'x': False, 'c': False,
             'enter': False, 'down': True, 'd': False, 'z': False}
@@ -50,9 +51,10 @@ def test_key2pad():
     test.update(temp2)
     print(test.previous_keys)
 
+
 def test_process_frame():
     """ Check that the basic Mario Kart AI can process a Dolphin screenshot and choose an action. """
-    agent = mk_naive_agent.MarioKartAgent(os.path.join(helper.get_models_folder(), "naive_model.pickle" ), 'NABE01')
+    agent = mk_naive_agent.MarioKartAgent(os.path.join(helper.get_models_folder(), "naive_model.pickle"), 'NABE01')
     while True:
         agent.process_frame()
 
@@ -65,6 +67,7 @@ def main():
     # test_state_map_population()
     # test_key2pad()
     test_process_frame()
+
 
 if __name__ == '__main__':
     main()
