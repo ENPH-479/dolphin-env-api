@@ -8,7 +8,7 @@ This project aims to provide modular, reusable code for programmatically interfa
 
 Assuming Dolphin has already been installed on Linux or MacOS, setup automated [pipe](https://en.wikipedia.org/wiki/Pipeline_(Unix)) inputs through the provided script, or by [following the instructions here](https://wiki.dolphin-emu.org/index.php?title=Pipe_Input).
 
-To run the setup script, execute:
+To use the provided setup script, execute:
 
 ```
 ./setup.sh
