@@ -28,7 +28,7 @@ pipenv shell
 ```
 
 ## Caveats
-* As of December 6th/2017, the project is being developed and tested exclusively on the [Debian](https://www.debian.org/) 9 operating system, though portions of the code have been tested on MacOS and [Ubuntu](https://www.ubuntu.com/)
+* As of December 6th/2017, the project is being developed and tested exclusively on the [Debian](https://www.debian.org/) 9 [Linux](https://en.wikipedia.org/wiki/Linux) operating system, though portions of the code have been tested on MacOS and [Ubuntu](https://www.ubuntu.com/)
 * This codebase and its documentation are still a work in progress
 
 ### Team
