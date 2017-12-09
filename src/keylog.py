@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 @enum.unique
 class Keyboard(enum.Enum):
     """ Default Dolphin keyboard map """
-    none = 0  # Neutral controller state
+    # none = 0  # Neutral controller state
     x = 1  # PRESS A
     z = 2  # PRESS B
     c = 3  # PRESS X
@@ -38,7 +38,7 @@ class KeyLog():
             logging_delay: Amount of time to wait before checking keyboard state again in
                 seconds.
         """
-        self.state = dict((el.name, False) for el in Keyboard)
+        self.state = dict((el.name, 0) for el in Keyboard)
         self.count = 1
         self.log = {"data": []}
         self.finish = False
@@ -51,13 +51,13 @@ class KeyLog():
             listener.join()
             logger.info("Key logging session finished.")
 
-    # on key press callback. sets pressed key state to True. shows warning if key is not defined.
+    # on key press callback. sets pressed key state to 1. shows warning if key is not defined.
     def on_press(self, key):
         if key == keyboard.Key.f9 or key == keyboard.Key.esc: return
         try:
             value = self._get_key_value(key)
-            if not self.state[Keyboard[value].name]:
-                self.state[Keyboard[value].name] = True
+            self.state[Keyboard[value].name] = 1
+            if self.state[Keyboard[value].name] == 0:
                 logger.debug('key {} pressed {}'.format(value, self.state[Keyboard[value].name]))
         except KeyError:
             logger.warning("Pressed key not defined within allowable controller inputs.")
@@ -66,8 +66,8 @@ class KeyLog():
     def on_release(self, key):
         try:
             value = self._get_key_value(key)
-            if self.state[Keyboard[value].name]:
-                self.state[Keyboard[value].name] = False
+            self.state[Keyboard[value].name] = 0
+            if self.state[Keyboard[value].name] == 1:
                 logger.debug('{} released {}'.format(value, self.state[Keyboard[value].name]))
         except KeyError:
             if key == keyboard.Key.esc:
