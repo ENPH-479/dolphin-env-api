@@ -2,6 +2,11 @@
 import logging
 import re
 import os
+import random
+
+import torch
+
+from src import keylog
 
 logger = logging.getLogger(__name__)
 fkey_pattern = re.compile(r'^F(\d{1,2})$', re.I)
@@ -42,3 +47,29 @@ def generate_img_key(image):
         logger.warning("Image key not generated.")
         return None
     return tuple(image_single_channel.flatten())
+
+
+def get_tensor(image):
+    try:
+        image_single_channel = image[:, :, 1]
+    except IndexError:
+        image_single_channel = image
+    except TypeError:
+        logger.warning("Image tensor not generated.")
+        return None
+    return torch.from_numpy(image_single_channel).contiguous()
+
+
+def get_output_vector(presses):
+    out = []
+    for key in keylog.Keyboard:
+        out.append(presses.get(key.name, 0))
+    return torch.FloatTensor(out)
+
+
+def get_key_state_from_vector(vector):
+    key_state = dict()
+    for i, key in enumerate(keylog.Keyboard):
+        rand_num = random.uniform(0, 1)
+        key_state[key.name] = vector[i].data[0] > rand_num
+    return key_state
