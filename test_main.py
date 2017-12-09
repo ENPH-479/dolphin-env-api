@@ -4,7 +4,12 @@
 
 import logging
 import time
+<<<<<<< Updated upstream
 from src import dp_controller, keylog, mk_downsampler, state_model
+=======
+import os
+from src import dp_controller, keylog, mk_downsampler, state_model, key2pad, mk_naive_agent, helper, mlp_model,mlp_agent
+>>>>>>> Stashed changes
 
 # Configure logger
 logging.basicConfig(format='%(name)s:%(filename)s:%(lineno)d:%(message)s', level=logging.INFO)
@@ -39,13 +44,49 @@ def test_state_map_population():
     print(len(model.state_decision_map))
 
 
+<<<<<<< Updated upstream
+=======
+def test_key2pad():
+    temp = {'left': True, 'right': False, 'up': False, 's': False, 'none': False, 'x': False, 'c': False,
+            'enter': False, 'down': True, 'd': False, 'z': False}
+    test = key2pad.KeyPadMap()
+    test.update(temp)
+    print(test.previous_keys)
+    temp2 = {'left': False, 'right': True, 'up': True, 's': True, 'none': True, 'x': True, 'c': True, 'enter': False,
+             'down': True, 'd': False, 'z': False}
+    test.update(temp2)
+    print(test.previous_keys)
+
+
+def test_process_frame():
+    """ Check that the basic Mario Kart AI can process a Dolphin screenshot and choose an action. """
+    agent = mk_naive_agent.MarioKartAgent(os.path.join(helper.get_models_folder(), "naive_model.pickle"))
+    while True:
+        agent.process_frame()
+
+def test_MLP_agent():
+    agent = mlp_agent.MarioKartAgent(os.path.join(helper.get_models_folder(), "mlp_model.pickle"))
+    while True:
+        agent.process_frame()
+
+>>>>>>> Stashed changes
 # Main function for entering tests
 def main():
     # test_dolphin_controller
     # test_mario_kart_downsampler()
+<<<<<<< Updated upstream
     # test_key_logging()
     test_state_map_population()
+=======
+    # test_state_map_population()
+    # test_key2pad()
+    #test_process_frame()
+    test_MLP_agent()
+>>>>>>> Stashed changes
 
+    #model = mlp_model.MlpModel(clean_imgs=True)
+    #model.train()
+    #model.pickle_model()
 
 if __name__ == '__main__':
     main()
