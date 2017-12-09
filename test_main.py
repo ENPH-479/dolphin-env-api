@@ -3,9 +3,15 @@
 """ This module contains some tests of code functionality. """
 
 import logging
-import time
 import os
-from src import dp_controller, keylog, mk_downsampler, state_model, key2pad, mk_naive_agent, helper
+import time
+
+import cv2
+import torch
+
+from src import dp_controller, keylog, mk_downsampler, key2pad, helper
+from src.agents import state_model, mk_naive_agent, mk_nn
+from src.agents.mk_nn_train import MKRNN
 
 # Configure logger
 logging.basicConfig(format='%(name)s:%(filename)s:%(lineno)d:%(message)s', level=logging.INFO)
@@ -56,6 +62,29 @@ def test_process_frame():
     while True:
         agent.process_frame()
 
+def test_nn_single_imge():
+    model = torch.load(os.path.join(helper.get_models_folder(), "mkrnn.pkl"))
+
+    image_dir = os.path.join(helper.get_output_folder(), "images")
+
+    image_file_name = "140.png"
+    img_path = os.path.join(image_dir, image_file_name)
+    image_data = cv2.imread(img_path)
+
+    # Generate tensor from image
+    x = helper.get_tensor(image_data)
+
+    pred = model(x)
+
+    key_state = helper.get_key_state_from_vector(pred)
+    print(pred, key_state)
+
+def test_nn():
+    """ Check that neural network Mario Kart AI can process a Dolphin screenshot and choose an action. """
+    agent = mk_nn.MarioKartNN(os.path.join(helper.get_models_folder(), "mkrnn.pkl"))
+    while True:
+        agent.process_frame()
+
 
 # Main function for entering tests
 def main():
@@ -64,7 +93,8 @@ def main():
     # test_mario_kart_downsampler()
     # test_state_map_population()
     # test_key2pad()
-    test_process_frame()
+    # test_process_frame()
+    test_nn()
 
 
 if __name__ == '__main__':
