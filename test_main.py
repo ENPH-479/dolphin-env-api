@@ -66,7 +66,7 @@ def test_process_frame():
 def test_nn_single_imge():
     model = torch.load(os.path.join(helper.get_models_folder(), "mkrnn.pkl"))
 
-    image_dir = os.path.join(helper.get_output_folder(), "images")
+    image_dir = os.path.join(helper.get_dataset_folder(), 'mario_kart', "images")
 
     image_file_name = "140.png"
     img_path = os.path.join(image_dir, image_file_name)
@@ -76,7 +76,6 @@ def test_nn_single_imge():
     x = helper.get_tensor(image_data)
 
     pred = model(x)
-
     key_state = helper.get_key_state_from_vector(pred)
     print(pred, key_state)
 
@@ -104,6 +103,7 @@ def main():
     # test_state_map_population()
     # test_key2pad()
     # test_process_frame()
+    # test_nn_single_imge()
     log_downsample_merge(logging_delay=0.3)
     # test_nn()
 

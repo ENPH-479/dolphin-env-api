@@ -78,9 +78,9 @@ class KeyPadMap:
 
             if is_press == 1:
                 if key == 'left':
-                    self.p.set_stick(key_pad, x=0.3, y=0.5)
+                    self.p.set_stick(key_pad, x=0.33, y=0.5)
                 elif key == 'right':
-                    self.p.set_stick(key_pad, x=0.7, y=0.5)
+                    self.p.set_stick(key_pad, x=0.66, y=0.5)
                 elif key == 'up':
                     self.p.set_stick(key_pad, x=0.5, y=1)
                 elif key == 'down':
