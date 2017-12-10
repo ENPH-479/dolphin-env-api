@@ -28,15 +28,14 @@ class Keyboard(enum.Enum):
     enter = 10  # PRESS ENTER
 
 
-class KeyLog():
+class KeyLog:
     """ Class allowing user to listen for, record, and save keyboard inputs. """
 
     def __init__(self, logging_delay=0.3):
         """ Create KeyLog instance.
 
         Args:
-            logging_delay: Amount of time to wait before checking keyboard state again in
-                seconds.
+            logging_delay: Amount of time to wait before checking keyboard state again in seconds.
         """
         self.state = dict((el.name, 0) for el in Keyboard)
         self.count = 1

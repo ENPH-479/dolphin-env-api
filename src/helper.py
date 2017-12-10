@@ -34,6 +34,13 @@ def get_models_folder():
     return file_path
 
 
+def get_dataset_folder():
+    curr_path = os.path.dirname(os.path.realpath(__file__))
+    file_path = os.path.join(curr_path, "../datasets")
+    os.makedirs(file_path, exist_ok=True)
+    return file_path
+
+
 def get_home_folder():
     return os.path.expanduser('~')
 

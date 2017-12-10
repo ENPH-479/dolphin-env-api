@@ -9,7 +9,7 @@ import time
 import cv2
 import torch
 
-from src import dp_controller, keylog, mk_downsampler, key2pad, helper
+from src import dp_controller, keylog, mk_downsampler, key2pad, helper, dataset_merger
 from src.agents import state_model, mk_naive_agent, mk_nn
 from src.agents.mk_nn_train import MKRNN
 
@@ -62,6 +62,7 @@ def test_process_frame():
     while True:
         agent.process_frame()
 
+
 def test_nn_single_imge():
     model = torch.load(os.path.join(helper.get_models_folder(), "mkrnn.pkl"))
 
@@ -79,11 +80,20 @@ def test_nn_single_imge():
     key_state = helper.get_key_state_from_vector(pred)
     print(pred, key_state)
 
+
 def test_nn():
     """ Check that neural network Mario Kart AI can process a Dolphin screenshot and choose an action. """
     agent = mk_nn.MarioKartNN(os.path.join(helper.get_models_folder(), "mkrnn.pkl"))
     while True:
         agent.process_frame()
+
+
+def log_downsample_merge(logging_delay=0.3):
+    """ Log key inputs, downsample images, merge to main dataset. """
+    k = keylog.KeyLog(logging_delay)
+    k.start()
+    mk_downsampler.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
+    dataset_merger.merge('mario_kart')
 
 
 # Main function for entering tests
@@ -94,7 +104,8 @@ def main():
     # test_state_map_population()
     # test_key2pad()
     # test_process_frame()
-    test_nn()
+    log_downsample_merge(logging_delay=0.3)
+    # test_nn()
 
 
 if __name__ == '__main__':

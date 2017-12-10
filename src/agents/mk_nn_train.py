@@ -19,16 +19,15 @@ hidden_size_2 = 64
 hidden_size_3 = 24
 output_vec = len(keylog.Keyboard)
 
-batch_size = 100
 num_epochs = 5
-learning_rate = 0.01
+
+
+# learning_rate = 0.01
 
 
 class MKRNN(nn.Module):
     def __init__(self):
-        """
-            Class for training neural network Mario Kart AI agent.
-        """
+        """ Neural network architecture of Mario Kart AI agent. """
         super(MKRNN, self).__init__()
         self.input_size = input_size
         self.hidden_size_1 = hidden_size_1
@@ -47,16 +46,14 @@ class MKRNN(nn.Module):
         )
 
     def forward(self, x):
-        """
-            Forward pass of the neural network. Accepts a tensor of size input_size*input_size.
-        """
+        """ Forward pass of the neural network. Accepts a tensor of size input_size*input_size. """
         x = Variable(x.view(self.input_size * self.input_size)).float()
         encoded = self.encoder(x)
         return encoded
 
 
 if __name__ == '__main__':
-
+    """ Train neural network Mario Kart AI agent. """
     mkrnn = MKRNN()
     # define gradient descent optimizer and loss function
     optimizer = torch.optim.Adam(mkrnn.parameters())
