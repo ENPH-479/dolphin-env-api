@@ -10,7 +10,7 @@ import cv2
 import torch
 
 from src import dp_controller, keylog, mk_downsampler, key2pad, helper, dataset_merger
-from src.agents import state_model, mk_naive_agent, mk_nn
+from src.agents import state_model, mk_naive_agent, mk_nn,mk_cnn
 from src.agents.mk_nn_train import MKRNN
 
 # Configure logger
@@ -86,6 +86,11 @@ def test_nn():
     while True:
         agent.process_frame()
 
+def test_cnn():
+    agent = mk_cnn.MarioKartCNN(os.path.join(helper.get_models_folder(), "mkcnn.pkl"))
+    while True:
+        agent.process_frame()
+
 
 def log_downsample_merge(logging_delay=0.3):
     """ Log key inputs, downsample images, merge to main dataset. """
@@ -104,8 +109,9 @@ def main():
     # test_key2pad()
     # test_process_frame()
     # test_nn_single_imge()
-    log_downsample_merge(logging_delay=0.3)
+    # log_downsample_merge(logging_delay=0.3)
     # test_nn()
+    test_cnn
 
 
 if __name__ == '__main__':
