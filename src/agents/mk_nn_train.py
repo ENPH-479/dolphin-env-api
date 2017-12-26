@@ -1,17 +1,17 @@
 """ This module contains code for maintaining the basic Mario Kart AI agent's state-decision map. """
-import json
 import logging
 import os
-import cv2
-from torch.utils.data import Dataset, DataLoader
 
 from src import helper, keylog
-
-logger = logging.getLogger(__name__)
+from src.train_valid_data import get_mario_train_valid_loader
 
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
+
+import matplotlib.pyplot as plt
+
+logger = logging.getLogger(__name__)
 
 # Hyper Parameters
 input_size = 15
@@ -54,29 +54,6 @@ class MKRNN(nn.Module):
         return encoded
 
 
-class MarioKartDataset(Dataset):
-    """Mario Kart dataset."""
-
-    def __init__(self, log_file=os.path.join(helper.get_dataset_folder(), 'mario_kart', "mario_kart.json")):
-        """
-        Args:
-            log_file: file path location to the log file containing key press states.
-        """
-        self.images = os.path.join(helper.get_dataset_folder(), 'mario_kart', "images")
-        with open(log_file, 'r') as f:
-            self.data = json.load(f).get('data')
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, idx):
-        key_state = self.data[idx]
-        img_name = os.path.join(self.images, "{}.png".format(key_state.get('count')))
-        image = cv2.imread(img_name)
-        tensor = helper.get_tensor(image)
-        return tensor, helper.get_output_vector(key_state['presses'])
-
-
 if __name__ == '__main__':
     """ Train neural network Mario Kart AI agent. """
     mkrnn = MKRNN()
@@ -84,21 +61,14 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(mkrnn.parameters())
     loss_func = nn.MSELoss()
 
-    # data_path = os.path.join(helper.get_dataset_folder(), 'mario_kart', "mario_kart.json")
-    # image_dir = os.path.join(helper.get_dataset_folder(), 'mario_kart', "images")
-    # with open(data_path, 'r') as keylog_file:
-    #     key_log_data = json.load(keylog_file).get('data')
-
     # load data
-    dataset = MarioKartDataset()
-    loader = DataLoader(
-        dataset=dataset,
-        batch_size=batch_size,
-        shuffle=True
-    )
+    train_loader, valid_loader = get_mario_train_valid_loader(batch_size, False, 123)
+
+    # store validation losses
+    validation_losses = []
 
     for epoch in range(num_epochs):
-        for step, (x, y) in enumerate(loader):
+        for step, (x, y) in enumerate(train_loader):
             # Wrap label 'y' in variable
             nn_label = Variable(y.view(-1, output_vec))
 
@@ -111,8 +81,21 @@ if __name__ == '__main__':
             optimizer.step()  # apply backpropagation
 
             # log training
-            if step % 100 == 0:
+            if step % 50 == 0:
                 print('Epoch: ', epoch, 'Step: ', step, '| train loss: %.4f' % loss.data[0])
+                valid_loss = 0
+                for (valid_x, valid_y) in valid_loader:
+                    valid_nn_label = Variable(valid_y.view(-1, output_vec))
+                    valid_forward_pass = mkrnn(valid_x)
+                    valid_loss_eval = loss_func(valid_forward_pass, valid_nn_label)  # compute validation loss
+                    valid_loss += valid_loss_eval.data[0]
+                print('Epoch: ', epoch, 'Step: ', step, '| validation loss: %.4f' % valid_loss)
+                validation_losses.append(valid_loss)
 
     # save model
     torch.save(mkrnn, os.path.join(helper.get_models_folder(), "mkrnn.pkl"))
+
+    # show validation curve
+    f = plt.figure()
+    plt.plot(validation_losses)
+    plt.show()
