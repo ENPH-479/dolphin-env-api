@@ -20,7 +20,6 @@ class MarioKartNN:
 
     def __init__(self, pickled_model_path, delay=0.2):
         """ Create a MarioKart Agent instance.
-
         Args:
             pickled_model_path: Path to the neural network model file.
         """
@@ -32,7 +31,6 @@ class MarioKartNN:
 
     def process_frame(self):
         """ Process a single frame of the current Dolphin game.
-
         Note:
             Process means read the state of the game and decide what action to take in this context.
             Dolphin will not take screenshots if the game is paused!
@@ -57,8 +55,15 @@ class MarioKartNN:
                 return
 
             # Predict key presses using neural network
-            prediction = self.model(x)
+            x=x[None,:,:]
+            x=torch.stack((x,x,x,x,x))
+            x=x.view(1,5,15,15)
+            x=x.float()
 
+            prediction = self.model(x)
+            print(prediction.shape)
+            prediction = prediction[0,5,1,:]
+            prediction= prediction[None,:]
             # Choose which action to take from prediction
             key_state = helper.get_key_state_from_vector(prediction)
 

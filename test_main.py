@@ -12,6 +12,7 @@ import torch
 from src import dp_controller, keylog, mk_downsampler, key2pad, helper, dataset_merger
 from src.agents import state_model, mk_naive_agent, mk_nn
 from src.agents.mk_nn_train import MKRNN
+from src.agents.mk_cnn_train import MKCNN
 
 # Configure logger
 logging.basicConfig(format='%(name)s:%(filename)s:%(lineno)d:%(message)s', level=logging.INFO)
@@ -104,8 +105,8 @@ def main():
     # test_key2pad()
     # test_process_frame()
     # test_nn_single_imge()
-    log_downsample_merge(logging_delay=0.2)
-    # test_nn("mkrnn.pkl")
+    # log_downsample_merge(logging_delay=0.2)
+    test_nn("mkcnn.pkl")
 
 
 if __name__ == '__main__':
