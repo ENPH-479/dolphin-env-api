@@ -76,7 +76,6 @@ def get_output_vector(presses):
 
 def get_key_state_from_vector(vector):
     key_state = dict()
-    print(key_state)
     # transpose to column vector
     n, d = vector.size()
     vector = vector.view(d, n)

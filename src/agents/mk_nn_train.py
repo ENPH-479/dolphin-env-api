@@ -19,7 +19,7 @@ hidden_size_2 = 64
 hidden_size_3 = 32
 output_vec = len(keylog.Keyboard)
 
-num_epochs = 4
+num_epochs = 20
 batch_size = 5
 
 
