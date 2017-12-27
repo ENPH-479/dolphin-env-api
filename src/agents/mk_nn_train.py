@@ -70,7 +70,6 @@ if __name__ == '__main__':
         for step, (x, y) in enumerate(train_loader):
             # Wrap label 'y' in variable
             nn_label = Variable(y.view(-1, output_vec))
-
             # forward pass
             forward_pass = mkrnn(x)
 

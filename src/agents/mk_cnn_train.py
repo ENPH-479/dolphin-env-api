@@ -30,7 +30,7 @@ class MKCNN(nn.Module):
         super(MKCNN, self).__init__()
         self.input_size = input_size
         self.in_channels = 3
-        self.out_channels = 2
+        self.out_channels = 3
         self.kernel_size = 5
         self.stride = 2
         self.padding = 1
@@ -38,10 +38,13 @@ class MKCNN(nn.Module):
         self.output_vec = output_vec
 
         self.encoder = nn.Sequential(
-            nn.Conv2d(self.in_channels,self.out_channels,(self.kernel_size,self.kernel_size,self.num_filters),stride=self.stride,padding=self.padding),
+            nn.Conv2d(self.in_channels,self.out_channels,self.kernel_size,stride=self.stride,padding=self.padding),
             nn.LeakyReLU(),
-            nn.Conv2d(in_channels=3,out_channels=1,kernel_size=(4,4,1), padding=2),
+            nn.Conv2d(in_channels=3,out_channels=3,kernel_size=4, padding=1,stride=2),
             nn.LeakyReLU(),
+            nn.Linear(3,10),
+            nn.Softmax2d(),
+
         )
 
     def forward(self, x):
@@ -105,15 +108,16 @@ if __name__ == '__main__':
     IMG=np.reshape(IMG,(508,3,15,15))
 
     for epoch in range(num_epochs):
-        # forward pass
-        forward_pass = mkcnn(torch.from_numpy(IMG))
 
-        for step, (x, y) in enumerate(loader):
+        for step, (x, y) in enumerate(loader,0):
             # Wrap label 'y' in variable, y.shape=3,10
             nn_label = Variable(y.view(-1, output_vec))
-            # forward pass
-            #forward_pass = mkcnn(torch.from_numpy(IMG))
 
+            # forward pass
+            x=x.unsqueeze(0)#x[None,:,:,:]
+            x=x.float()
+            forward_pass = mkcnn(Variable(x))
+            forward_pass=forward_pass[0,0,:,:]
             loss = loss_func(forward_pass, nn_label)  # compute loss
             optimizer.zero_grad()  # zero gradients from previous step
             loss.backward()  # compute gradients
