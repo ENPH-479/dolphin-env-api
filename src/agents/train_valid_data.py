@@ -84,5 +84,4 @@ def get_mario_train_valid_loader(batch_size,
     valid_loader = torch.utils.data.DataLoader(valid_dataset,
                                                batch_size=batch_size, sampler=valid_sampler,
                                                num_workers=num_workers, pin_memory=pin_memory)
-
     return train_loader, valid_loader

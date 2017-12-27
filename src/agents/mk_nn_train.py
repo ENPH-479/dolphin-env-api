@@ -72,7 +72,6 @@ if __name__ == '__main__':
             nn_label = Variable(y.view(-1, output_vec))
             # forward pass
             forward_pass = mkrnn(x)
-
             loss = loss_func(forward_pass, nn_label)  # compute loss
             optimizer.zero_grad()  # zero gradients from previous step
             loss.backward()  # compute gradients

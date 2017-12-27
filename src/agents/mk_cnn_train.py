@@ -3,9 +3,10 @@ import logging
 import os
 import cv2
 from torch.utils.data import Dataset, DataLoader
+import matplotlib.pyplot as plt
 
 from src import helper, keylog
-
+from src.agents.train_valid_data import get_mario_train_valid_loader
 logger = logging.getLogger(__name__)
 
 import torch
@@ -20,8 +21,8 @@ hidden_size_2 = 64
 hidden_size_3 = 24
 output_vec = len(keylog.Keyboard)
 
-num_epochs = 5
-batch_size = 3
+num_epochs = 3
+batch_size = 5
 
 
 class MKCNN(nn.Module):
@@ -29,28 +30,31 @@ class MKCNN(nn.Module):
         """ Neural network architecture of Mario Kart AI agent. """
         super(MKCNN, self).__init__()
         self.input_size = input_size
-        self.in_channels = 3
-        self.out_channels = 3
+        self.in_channels = 5
+        self.out_channels = 6
         self.kernel_size = 5
         self.stride = 2
         self.padding = 1
         self.num_filters = 2
         self.output_vec = output_vec
-
+        self.count=1
         self.encoder = nn.Sequential(
-            nn.Conv2d(self.in_channels,self.out_channels,self.kernel_size,stride=self.stride,padding=self.padding),
+            nn.Conv2d(self.in_channels,self.out_channels,(self.kernel_size,self.kernel_size),stride=self.stride,padding=self.padding),
             nn.LeakyReLU(),
-            nn.Conv2d(in_channels=3,out_channels=3,kernel_size=4, padding=1,stride=2),
+            nn.Conv2d(in_channels=6,out_channels=6,kernel_size=(1,1), padding=1,stride=2),
             nn.LeakyReLU(),
-            nn.Linear(3,10),
-            nn.Softmax2d(),
+            nn.Linear(5,10),
+            nn.Softmax(),
 
         )
 
     def forward(self, x):
         """ Forward pass of the neural network. Accepts a tensor of size input_size*input_size. """
         #x = Variable(x.view(-1, self.input_size * self.input_size)).float()
-        encoded = self.encoder(x)
+        #self.count+=1
+        #print(self.count)
+        #print(x)
+        encoded = self.encoder(Variable(x))
         return encoded
 
 
@@ -83,7 +87,7 @@ if __name__ == '__main__':
     """ Train neural network Mario Kart AI agent. """
     mkcnn = MKCNN()
     # define gradient descent optimizer and loss function
-    optimizer = torch.optim.Adam(mkcnn.parameters())
+    optimizer = torch.optim.Adam(mkcnn.parameters(), weight_decay=0.05, lr=1e-4)
     loss_func = nn.MSELoss()
 
     # data_path = os.path.join(helper.get_dataset_folder(), 'mario_kart', "mario_kart.json")
@@ -92,31 +96,19 @@ if __name__ == '__main__':
     #     key_log_data = json.load(keylog_file).get('data')
 
     # load data
-    dataset = MarioKartDataset()
-    loader = DataLoader(
-        dataset=dataset,
-        batch_size=batch_size,
-        shuffle=True
-    )
-    # Combine input images to a 4-D array
-    IMG = np.zeros((508,15,15,3))
-    for c in range (1,508):
-        key_state = dataset.data[c]
-        img_name = os.path.join(dataset.images, "{}.png".format(key_state.get('count')))
-        image = cv2.imread(img_name)
-        IMG[c,:,:,:]=image
-    IMG=np.reshape(IMG,(508,3,15,15))
+    train_loader, valid_loader = get_mario_train_valid_loader(batch_size, False, 123)
+    # store validation losses
+    validation_losses = []
 
     for epoch in range(num_epochs):
 
-        for step, (x, y) in enumerate(loader,0):
+        for step, (x, y) in enumerate(train_loader):
             # Wrap label 'y' in variable, y.shape=3,10
             nn_label = Variable(y.view(-1, output_vec))
-
             # forward pass
-            x=x.unsqueeze(0)#x[None,:,:,:]
+            x=x[None,:,:,]
             x=x.float()
-            forward_pass = mkcnn(Variable(x))
+            forward_pass = mkcnn(x)
             forward_pass=forward_pass[0,0,:,:]
             loss = loss_func(forward_pass, nn_label)  # compute loss
             optimizer.zero_grad()  # zero gradients from previous step
@@ -124,8 +116,25 @@ if __name__ == '__main__':
             optimizer.step()  # apply backpropagation
 
             # log training
-            if step % 100 == 0:
+            if step % 50 == 0:
                 print('Epoch: ', epoch, 'Step: ', step, '| train loss: %.4f' % loss.data[0])
+                valid_loss = 0
+                for (valid_x, valid_y) in valid_loader:
+                    valid_nn_label = Variable(valid_y.view(-1, output_vec))
+                    valid_x = valid_x.unsqueeze(0)
+                    valid_x = valid_x.float()
+                    #print(valid_x.shape)
+                    valid_forward_pass = mkcnn(valid_x)
+                    valid_forward_pass = valid_forward_pass[0,0,:,:]
+                    valid_loss_eval = loss_func(valid_forward_pass, valid_nn_label)  # compute validation loss
+                    valid_loss += valid_loss_eval.data[0]
+                print('Epoch: ', epoch, 'Step: ', step, '| validation loss: %.4f' % valid_loss)
+                validation_losses.append(valid_loss)
 
-        # save model
-        torch.save(mkcnn, os.path.join(helper.get_models_folder(), "mkcnn.pkl"))
+    # save model
+    torch.save(mkcnn, os.path.join(helper.get_models_folder(), "mkcnn.pkl"))
+
+    # show validation curve
+    f = plt.figure()
+    plt.plot(validation_losses)
+    plt.show()
