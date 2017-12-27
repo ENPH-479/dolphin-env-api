@@ -55,22 +55,23 @@ class Downsampler:
 
             # Maxpooling
             data = np.asarray(im_gray, dtype='int32')
-            img_pooled = block_reduce(data, block_size=(self.pooling_dim, self.pooling_dim), func=np.max)
+            im = block_reduce(data, block_size=(self.pooling_dim, self.pooling_dim), func=np.max)
 
             # Quantization
-            quantized = img_pooled
-            quantized[(quantized > 0) & (quantized < 51)] = 21
-            quantized[(quantized > 50) & (quantized < 103)] = 78
-            quantized[(quantized > 102) & (quantized < 155)] = 130
-            quantized[(quantized > 154) & (quantized < 207)] = 182
-            quantized[(quantized > 206) & (quantized < 256)] = 232
+            # quantized = im
+            # quantized[(quantized > 0) & (quantized < 51)] = 21
+            # quantized[(quantized > 50) & (quantized < 103)] = 78
+            # quantized[(quantized > 102) & (quantized < 155)] = 130
+            # quantized[(quantized > 154) & (quantized < 207)] = 182
+            # quantized[(quantized > 206) & (quantized < 256)] = 232
+            # im = quantized
 
             # save downsampled image if save_img is True
-            if save_img: self.save_image(quantized, output_name)
+            if save_img: self.save_image(im, output_name)
             # remove original screenshot image if clean_data is True
             if clean_data: os.unlink(file_path)
 
-            return quantized
+            return im
         except:
             logger.error(traceback.format_exc())
             logger.error("failed to downsample image.")

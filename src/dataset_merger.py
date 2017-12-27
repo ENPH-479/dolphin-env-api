@@ -35,14 +35,17 @@ def merge(game_name, existing_data='log.json'):
     logger.info("Initial dataset size: {}".format(dataset_size))
     count = dataset_size + 1
     for log in new_log:
-        data.append({
-            "count": count,
-            "presses": log['presses']
-        })
-        image_file_name = "{}.png".format(log['count'])
-        img_path = os.path.join(image_dir, image_file_name)
-        os.rename(img_path, os.path.join(master_images, "{}.png".format(count)))
-        count += 1
+        try:
+            image_file_name = "{}.png".format(log['count'])
+            img_path = os.path.join(image_dir, image_file_name)
+            os.rename(img_path, os.path.join(master_images, "{}.png".format(count)))
+            data.append({
+                "count": count,
+                "presses": log['presses']
+            })
+            count += 1
+        except FileNotFoundError:
+            logger.error("image not found, skipping.")
 
     # save dataset
     with open(master_log_file, 'w') as f:

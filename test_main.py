@@ -10,7 +10,7 @@ import cv2
 import torch
 
 from src import dp_controller, keylog, mk_downsampler, key2pad, helper, dataset_merger
-from src.agents import state_model, mk_naive_agent, mk_nn,mk_cnn
+from src.agents import state_model, mk_naive_agent, mk_nn
 from src.agents.mk_nn_train import MKRNN
 
 # Configure logger
@@ -80,14 +80,9 @@ def test_nn_single_imge():
     print(pred, key_state)
 
 
-def test_nn():
+def test_nn(nn_name):
     """ Check that neural network Mario Kart AI can process a Dolphin screenshot and choose an action. """
-    agent = mk_nn.MarioKartNN(os.path.join(helper.get_models_folder(), "mkrnn.pkl"))
-    while True:
-        agent.process_frame()
-
-def test_cnn():
-    agent = mk_cnn.MarioKartCNN(os.path.join(helper.get_models_folder(), "mkcnn.pkl"))
+    agent = mk_nn.MarioKartNN(os.path.join(helper.get_models_folder(), nn_name))
     while True:
         agent.process_frame()
 
@@ -109,9 +104,8 @@ def main():
     # test_key2pad()
     # test_process_frame()
     # test_nn_single_imge()
-    # log_downsample_merge(logging_delay=0.3)
-    # test_nn()
-    test_cnn
+    log_downsample_merge(logging_delay=0.2)
+    # test_nn("mkrnn.pkl")
 
 
 if __name__ == '__main__':

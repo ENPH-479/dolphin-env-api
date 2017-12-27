@@ -2,14 +2,13 @@
 import logging
 import os
 
-from src import helper, keylog
-from src.train_valid_data import get_mario_train_valid_loader
-
+import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
 
-import matplotlib.pyplot as plt
+from src import helper, keylog
+from src.agents.train_valid_data import get_mario_train_valid_loader
 
 logger = logging.getLogger(__name__)
 
