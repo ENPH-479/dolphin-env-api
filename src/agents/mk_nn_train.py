@@ -19,8 +19,8 @@ hidden_size_2 = 64
 hidden_size_3 = 24
 output_vec = len(keylog.Keyboard)
 
-num_epochs = 5
-batch_size = 3
+num_epochs = 3
+batch_size = 5
 
 
 # learning_rate = 0.01
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     """ Train neural network Mario Kart AI agent. """
     mkrnn = MKRNN()
     # define gradient descent optimizer and loss function
-    optimizer = torch.optim.Adam(mkrnn.parameters())
+    optimizer = torch.optim.Adam(mkrnn.parameters(), weight_decay=0.05, lr=1e-4)
     loss_func = nn.MSELoss()
 
     # load data
