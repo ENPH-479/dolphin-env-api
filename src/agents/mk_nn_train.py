@@ -14,12 +14,12 @@ logger = logging.getLogger(__name__)
 
 # Hyper Parameters
 input_size = 15
-hidden_size_1 = 256
+hidden_size_1 = 64
 hidden_size_2 = 64
-hidden_size_3 = 24
+hidden_size_3 = 32
 output_vec = len(keylog.Keyboard)
 
-num_epochs = 3
+num_epochs = 4
 batch_size = 5
 
 
@@ -38,10 +38,13 @@ class MKRNN(nn.Module):
 
         self.encoder = nn.Sequential(
             nn.Linear(self.input_size * self.input_size, self.hidden_size_1),
+            nn.Dropout(0.2),
             nn.LeakyReLU(),
             nn.Linear(self.hidden_size_1, self.hidden_size_2),
+            nn.Dropout(0.2),
             nn.LeakyReLU(),
             nn.Linear(self.hidden_size_2, self.hidden_size_3),
+            nn.Dropout(0.2),
             nn.LeakyReLU(),
             nn.Linear(self.hidden_size_3, self.output_vec)
         )
@@ -90,7 +93,7 @@ if __name__ == '__main__':
                 validation_losses.append(valid_loss)
 
     # save model
-    torch.save(mkrnn, os.path.join(helper.get_models_folder(), "mkrnn.pkl"))
+    torch.save(mkrnn, os.path.join(helper.get_models_folder(), "mknn.pkl"))
 
     # show validation curve
     f = plt.figure()
