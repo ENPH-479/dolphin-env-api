@@ -19,11 +19,12 @@ hidden_size_2 = 64
 hidden_size_3 = 32
 output_vec = len(keylog.Keyboard)
 
-num_epochs = 20
-batch_size = 5
+num_epochs = 12
+batch_size = 40
 
 
-# learning_rate = 0.01
+learning_rate = 1e-4
+
 
 
 class MKRNN(nn.Module):
@@ -67,7 +68,7 @@ if __name__ == '__main__':
     """ Train neural network Mario Kart AI agent. """
     mkrnn = MKRNN()
     # define gradient descent optimizer and loss function
-    optimizer = torch.optim.Adam(mkrnn.parameters(), weight_decay=0.05, lr=1e-4)
+    optimizer = torch.optim.Adam(mkrnn.parameters(), weight_decay=0.05, lr=1e-4,)
     loss_func = nn.MSELoss()
 
     # load data
@@ -113,4 +114,8 @@ if __name__ == '__main__':
     # show validation curve
     f = plt.figure()
     plt.plot(validation_losses)
+    plt.ylabel('Validation error')
+    plt.xlabel('Number of iterations')
+    plt.title('NN Cross Validation Error, learning rate = %s, batch size = %i, number of Epochs= %i' % (
+   learning_rate,batch_size, num_epochs))
     plt.show()

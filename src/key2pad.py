@@ -69,10 +69,11 @@ class KeyPadMap:
 
         # PRESS/RELEASE
         if key_pad != dp_controller.Stick.MAIN:
-            if is_press == 1:
-                self.p.press_button(key_pad)
-            else:
-                self.p.release_button(key_pad)
+            if key_pad != dp_controller.Button.START:
+                if is_press == 1:
+                    self.p.press_button(key_pad)
+                else:
+                    self.p.release_button(key_pad)
         # SET STICK
         else:
 

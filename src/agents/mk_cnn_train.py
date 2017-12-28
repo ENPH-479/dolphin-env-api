@@ -20,8 +20,8 @@ import numpy as np
 input_size = 15
 output_vec = len(keylog.Keyboard)
 
-num_epochs = 20
-batch_size = 10
+num_epochs = 12
+batch_size = 40
 l2_reg = 0.05
 learning_rate = 1e-4
 
@@ -126,4 +126,7 @@ if __name__ == '__main__':
     # show validation curve
     f = plt.figure()
     plt.plot(validation_losses)
+    plt.ylabel('Validation error')
+    plt.xlabel('Number of iterations')
+    plt.title('CNN Cross Validation Error, learning rate = %s, batch size = %i, number of Epochs= %i'%(learning_rate,batch_size,num_epochs))
     plt.show()

@@ -32,6 +32,7 @@ def test_key_logging():
     k.start()
 
 
+
 def test_mario_kart_downsampler():
     """ Check that the basic Mario Kart image downsampler can process images saved by Dolphin. """
     mk_downsampler.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
