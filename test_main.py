@@ -105,8 +105,8 @@ def main():
     # test_key2pad()
     # test_process_frame()
     # test_nn_single_imge()
-    # log_downsample_merge(logging_delay=0.2)
-    test_nn("mkcnn.pkl")
+    log_downsample_merge(logging_delay=0.1)
+    # test_nn("mkcnn.pkl")
 
 
 if __name__ == '__main__':
