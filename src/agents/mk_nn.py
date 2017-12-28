@@ -55,18 +55,7 @@ class MarioKartNN:
                 return
 
             # Predict key presses using neural network
-
-            #For mkcnn only
-            x=x[None,:,:]
-            x=torch.stack((x,x,x,x,x))
-            x=x.view(1,5,15,15)
-            x=x.float()
-
             prediction = self.model(x)
-            
-            #For mkcnn only
-            prediction = prediction[0,5,1,:]
-            prediction= prediction[None,:]
 
             # Choose which action to take from prediction
             key_state = helper.get_key_state_from_vector(prediction)
