@@ -45,7 +45,7 @@ def merge(game_name, existing_data='log.json'):
             })
             count += 1
         except FileNotFoundError:
-            logger.error("image not found, skipping.")
+            logger.error("image not found, skipping {}".format(count))
 
     # save dataset
     with open(master_log_file, 'w') as f:
