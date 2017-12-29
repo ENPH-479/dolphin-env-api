@@ -11,6 +11,7 @@ def get_mario_train_valid_loader(batch_size,
                                  random_seed,
                                  valid_size=0.2,
                                  shuffle=True,
+                                 history=1,
                                  num_workers=1,
                                  pin_memory=False):
     """
@@ -61,8 +62,8 @@ def get_mario_train_valid_loader(batch_size,
         ])
 
     # load the dataset
-    train_dataset = MarioKartDataset(transform=train_transform)
-    valid_dataset = MarioKartDataset(transform=valid_transform)
+    train_dataset = MarioKartDataset(transform=train_transform, history=history)
+    valid_dataset = MarioKartDataset(transform=valid_transform, history=history)
 
     num_train = len(train_dataset)
     indices = list(range(num_train))

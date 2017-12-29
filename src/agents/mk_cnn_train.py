@@ -26,7 +26,7 @@ class MKCNN(nn.Module):
         """ Convolutional neural network architecture of Mario Kart AI agent. """
         super(MKCNN, self).__init__()
         self.input_size = input_size
-        self.conv1_in, self.conv1_out, self.conv1_kernel = 1, 9, 3
+        self.conv1_in, self.conv1_out, self.conv1_kernel = 2, 9, 3
         self.conv1_max_kernel = 3
         self.conv2_in, self.conv2_out, self.conv2_kernel = self.conv1_out, 6, 3
         self.fc_hidden1 = self.conv2_out * 5 * 5
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     loss_func = nn.MSELoss()
 
     # load data
-    train_loader, valid_loader = get_mario_train_valid_loader(batch_size, False, 123)
+    train_loader, valid_loader = get_mario_train_valid_loader(batch_size, False, 123, history=2)
     # store validation losses
     validation_losses = []
 

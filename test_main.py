@@ -32,7 +32,6 @@ def test_key_logging():
     k.start()
 
 
-
 def test_mario_kart_downsampler():
     """ Check that the basic Mario Kart image downsampler can process images saved by Dolphin. """
     mk_downsampler.Downsampler('NABE01', final_dim=15).downsample_dir(save_imgs=True)
@@ -82,9 +81,9 @@ def test_nn_single_imge():
     print(pred, key_state)
 
 
-def test_nn(nn_name):
+def test_nn(nn_name, history=1):
     """ Check that neural network Mario Kart AI can process a Dolphin screenshot and choose an action. """
-    agent = mk_nn.MarioKartNN(os.path.join(helper.get_models_folder(), nn_name))
+    agent = mk_nn.MarioKartNN(os.path.join(helper.get_models_folder(), nn_name), history_length=history)
     while True:
         agent.process_frame()
 
@@ -106,8 +105,8 @@ def main():
     # test_key2pad()
     # test_process_frame()
     # test_nn_single_imge()
-    log_downsample_merge(logging_delay=0.2)
-    # test_nn("mkcnn.pkl")
+    # log_downsample_merge(logging_delay=0.2)
+    test_nn("mkcnn.pkl", history=2)
 
 
 if __name__ == '__main__':
