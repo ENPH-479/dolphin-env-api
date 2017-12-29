@@ -1,5 +1,6 @@
 """ Module containing miscellaneous helper functions. """
 import logging
+import pickle
 import re
 import os
 import random
@@ -43,6 +44,13 @@ def get_dataset_folder():
 
 def get_home_folder():
     return os.path.expanduser('~')
+
+
+def pickle_object(data, name, directory=get_output_folder()):
+    """ Save data as a pickled file in dir """
+    output = os.path.join(directory, "{}.pkl".format(name))
+    with open(output, 'wb') as m:
+        pickle.dump(data, m, pickle.HIGHEST_PROTOCOL)
 
 
 def generate_img_key(image):
