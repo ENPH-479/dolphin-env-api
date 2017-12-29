@@ -1,8 +1,5 @@
-import json
 import logging
 import os
-import cv2
-from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
 
 from src import helper, keylog
@@ -14,16 +11,14 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 
-import numpy as np
-
 # Hyper Parameters
 input_size = 15
 output_vec = len(keylog.Keyboard)
 
-num_epochs = 12
-batch_size = 40
+num_epochs = 100
+batch_size = 50
 l2_reg = 0.05
-learning_rate = 1e-4
+learning_rate = 1e-5
 
 
 class MKCNN(nn.Module):
@@ -33,9 +28,10 @@ class MKCNN(nn.Module):
         self.input_size = input_size
         self.conv1_in, self.conv1_out, self.conv1_kernel = 1, 9, 3
         self.conv1_max_kernel = 3
-        self.conv2_in, self.conv2_out, self.conv2_kernel = 9, 6, 3
-        self.fc_hidden1 = 6 * 5 * 5
-        self.fc_hidden2 = 100
+        self.conv2_in, self.conv2_out, self.conv2_kernel = self.conv1_out, 6, 3
+        self.fc_hidden1 = self.conv2_out * 5 * 5
+        self.fc_hidden2 = 64
+        self.fc_hidden3 = 64
 
         self.conv1 = nn.Sequential(
             nn.Conv2d(self.conv1_in, self.conv1_out, kernel_size=self.conv1_kernel,
@@ -49,9 +45,12 @@ class MKCNN(nn.Module):
         )
         self.fc = nn.Sequential(
             nn.Linear(self.fc_hidden1, self.fc_hidden2),
-            nn.Dropout(0.2),
+            nn.Dropout(0.5),
             nn.LeakyReLU(),
-            nn.Linear(self.fc_hidden2, output_vec),
+            nn.Linear(self.fc_hidden2, self.fc_hidden3),
+            nn.Dropout(0.5),
+            nn.LeakyReLU(),
+            nn.Linear(self.fc_hidden3, output_vec),
         )
 
         if torch.cuda.is_available():
@@ -61,7 +60,7 @@ class MKCNN(nn.Module):
     def forward(self, x):
         """ Forward pass of the neural network. Accepts a tensor of size input_size*input_size. """
         # print(x.shape)
-        x = x.view(-1, 1, self.input_size, self.input_size)
+        x = x.view(-1, self.conv1_in, self.input_size, self.input_size)
         # print(x.shape)
         x = Variable(x).float()
         if torch.cuda.is_available():
@@ -128,5 +127,6 @@ if __name__ == '__main__':
     plt.plot(validation_losses)
     plt.ylabel('Validation error')
     plt.xlabel('Number of iterations')
-    plt.title('CNN Cross Validation Error, learning rate = %s, batch size = %i, number of Epochs= %i'%(learning_rate,batch_size,num_epochs))
+    plt.title('CNN Cross Validation Error, learning rate = %s, batch size = %i, number of Epochs= %i' % (
+        learning_rate, batch_size, num_epochs))
     plt.show()
