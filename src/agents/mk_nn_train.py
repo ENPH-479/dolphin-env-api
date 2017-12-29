@@ -22,7 +22,7 @@ output_vec = len(keylog.Keyboard)
 num_epochs = 50
 batch_size = 50
 
-learning_rate = 1e-4
+learning_rate = 1e-5
 
 
 class MKNN(nn.Module):
