@@ -59,20 +59,14 @@ class MKCNN(nn.Module):
 
     def forward(self, x):
         """ Forward pass of the neural network. Accepts a tensor of size input_size*input_size. """
-        # print(x.shape)
         x = x.view(-1, self.conv1_in, self.input_size, self.input_size)
-        # print(x.shape)
         x = Variable(x).float()
         if torch.cuda.is_available():
             x = x.cuda()
         out = self.conv1(x)
-        # print(out.shape)
         out = self.conv2(out)
-        # print(out.shape)
         out = out.view(out.size(0), -1)  # flatten the output of conv2 to (batch_size, 6 * 5 *5)
-        # print(out.shape)
         out = self.fc(out)
-        # print(out.shape)
         return out
 
 
