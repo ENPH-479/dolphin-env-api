@@ -106,7 +106,7 @@ def main():
     # test_process_frame()
     # test_nn_single_imge()
     # log_downsample_merge(logging_delay=0.2)
-    test_nn("mkcnn.pkl", history=2)
+    test_nn("mkcnn.pkl", history=3)
 
 
 if __name__ == '__main__':
