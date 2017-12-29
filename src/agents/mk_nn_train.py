@@ -25,10 +25,10 @@ batch_size = 50
 learning_rate = 1e-4
 
 
-class MKRNN(nn.Module):
+class MKNN(nn.Module):
     def __init__(self):
         """ Neural network architecture of Mario Kart AI agent. """
-        super(MKRNN, self).__init__()
+        super(MKNN, self).__init__()
         self.input_size = input_size
         self.hidden_size_1 = hidden_size_1
         self.hidden_size_2 = hidden_size_2
@@ -64,9 +64,9 @@ class MKRNN(nn.Module):
 
 if __name__ == '__main__':
     """ Train neural network Mario Kart AI agent. """
-    mkrnn = MKRNN()
+    mknn = MKNN()
     # define gradient descent optimizer and loss function
-    optimizer = torch.optim.Adam(mkrnn.parameters(), weight_decay=0.05, lr=learning_rate)
+    optimizer = torch.optim.Adam(mknn.parameters(), weight_decay=0.05, lr=learning_rate)
     loss_func = nn.MSELoss()
 
     # load data
@@ -84,7 +84,7 @@ if __name__ == '__main__':
             nn_label = Variable(y_label)
 
             # forward pass
-            forward_pass = mkrnn(x)
+            forward_pass = mknn(x)
             loss = loss_func(forward_pass, nn_label)  # compute loss
             optimizer.zero_grad()  # zero gradients from previous step
             loss.backward()  # compute gradients
@@ -100,17 +100,18 @@ if __name__ == '__main__':
                         valid_y_label = valid_y_label.cuda()
                     valid_nn_label = Variable(valid_y_label)
 
-                    valid_forward_pass = mkrnn(valid_x)
+                    valid_forward_pass = mknn(valid_x)
                     valid_loss_eval = loss_func(valid_forward_pass, valid_nn_label)  # compute validation loss
                     valid_loss += valid_loss_eval.data[0]
                 print('Epoch: ', epoch, 'Step: ', step, '| validation loss: %.4f' % valid_loss)
                 validation_losses.append(valid_loss)
 
     # save model
-    torch.save(mkrnn, os.path.join(helper.get_models_folder(), "mknn.pkl"))
+    torch.save(mknn, os.path.join(helper.get_models_folder(), "mknn.pkl"))
 
-    # save validation loss
-    helper.pickle_object(validation_losses, "mknn_lr{}_epoch{}".format(learning_rate, num_epochs))
+    # save validation curve data
+    fig_data = [validation_losses, num_epochs, batch_size, learning_rate]
+    helper.pickle_object(fig_data, "mknn_lr{}_epoch{}".format(learning_rate, num_epochs))
 
     # show validation curve
     f = plt.figure()

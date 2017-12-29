@@ -116,7 +116,7 @@ if __name__ == '__main__':
     # save model
     torch.save(mkcnn, os.path.join(helper.get_models_folder(), "mkcnn_{}_frames.pkl".format(num_input_frames)))
 
-    # save training data
+    # save validation curve data
     fig_data = [validation_losses, num_input_frames, num_epochs, batch_size, learning_rate]
     helper.pickle_object(fig_data, "mkcnn_training_data_{}_frames".format(num_input_frames))
 
