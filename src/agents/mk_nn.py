@@ -42,7 +42,7 @@ class MarioKartNN:
         # Take screenshot of current Dolphin frame
         dp_screenshot.take_screenshot()
         screenshot_file = os.path.join(self.screenshot_dir, 'NABE01-1.png')
-        time.sleep(self.frame_delay)
+        # time.sleep(self.frame_delay)
 
         try:
             # Downsample the screenshot and calculate dictionary key
