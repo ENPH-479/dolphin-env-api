@@ -14,8 +14,8 @@ from torch.autograd import Variable
 # Hyper Parameters
 input_size = 15
 output_vec = len(keylog.Keyboard)
-
-num_epochs =75
+num_input_frames = 2
+num_epochs = 1
 batch_size = 50
 l2_reg = 0.05
 learning_rate = 1e-5
@@ -26,7 +26,7 @@ class MKCNN(nn.Module):
         """ Convolutional neural network architecture of Mario Kart AI agent. """
         super(MKCNN, self).__init__()
         self.input_size = input_size
-        self.conv1_in, self.conv1_out, self.conv1_kernel = 3, 9, 3
+        self.conv1_in, self.conv1_out, self.conv1_kernel = num_input_frames, 9, 3
         self.conv1_max_kernel = 3
         self.conv2_in, self.conv2_out, self.conv2_kernel = self.conv1_out, 6, 3
         self.fc_hidden1 = self.conv2_out * 5 * 5
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     loss_func = nn.MSELoss()
 
     # load data
-    train_loader, valid_loader = get_mario_train_valid_loader(batch_size, False, 123, history=3)
+    train_loader, valid_loader = get_mario_train_valid_loader(batch_size, False, 123, history=num_input_frames)
     # store validation losses
     validation_losses = []
 
@@ -114,13 +114,17 @@ if __name__ == '__main__':
                 validation_losses.append(valid_loss)
 
     # save model
-    torch.save(mkcnn, os.path.join(helper.get_models_folder(), "mkcnn.pkl"))
+    torch.save(mkcnn, os.path.join(helper.get_models_folder(), "mkcnn_{}_frames.pkl".format(num_input_frames)))
+
+    # save training data
+    fig_data = [validation_losses, num_input_frames, num_epochs, batch_size, learning_rate]
+    helper.pickle_object(fig_data, "mkcnn_training_data_{}_frames".format(num_input_frames))
 
     # show validation curve
     f = plt.figure()
     plt.plot(validation_losses)
-    plt.ylabel('Validation error')
-    plt.xlabel('Number of iterations')
-    plt.title('CNN Cross Validation Error, learning rate = %s, batch size = %i, number of Epochs= %i' % (
+    plt.ylabel('Validation Error')
+    plt.xlabel('Number of Iterations')
+    plt.title('CNN Cross Validation Error, Learning Rate = %s, Batch Size = %i, Number of Epochs= %i' % (
         learning_rate, batch_size, num_epochs))
     plt.show()
