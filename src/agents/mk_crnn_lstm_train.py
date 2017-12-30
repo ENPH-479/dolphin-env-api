@@ -1,5 +1,6 @@
 """
-This module implements a Mario Kart AI agent using a Convolutional Recurrent Neural Network (CRNN).
+This module implements a Convolutional Recurrent Neural Network (CRNN) Mario Kart AI Agent using
+Long Short-Term Memory (LSTM) and PyTorch.
 """
 
 import logging
@@ -28,10 +29,11 @@ batch_size = 50
 l2_reg = 0.05
 learning_rate = 1e-5
 
-class MKCRNN(nn.Module):
+
+class MKCRNN_lstm(nn.Module):
     def __init__(self):
-        """ Convolutional Recurrent Neural Network architecture of Mario Kart AI agent. """
-        super(MKCRNN, self).__init__()
+        """ Convolutional Recurrent Neural Network (CRNN) architecture of Mario Kart AI agent with LSTM. """
+        super(MKCRNN_lstm, self).__init__()
         self.input_size = input_size
         self.history = history
         self.conv1_in, self.conv1_out, self.conv1_kernel = num_input_frames, 9, 3
@@ -86,21 +88,19 @@ class MKCRNN(nn.Module):
         encoded = self.encoder(out)
         return encoded
 
-    # load data
-    train_loader, valid_loader = get_mario_train_valid_loader(batch_size, False, 123, history=num_input_frames)
-    # store validation losses
-    validation_losses = []
 
 if __name__ == '__main__':
     """ Train neural network Mario Kart AI agent. """
-    mkcrnn = MKCRNN()
-    # define gradient descent optimizer and loss function
+    mkcrnn = MKCRNN_lstm()
+
+    # Define gradient descent optimizer and loss function
     optimizer = torch.optim.Adam(mkcrnn.parameters(), weight_decay=l2_reg, lr=learning_rate)
     loss_func = nn.MSELoss()
 
-    # load data
+    # Load data
     train_loader, valid_loader = get_mario_train_valid_loader(batch_size, False, 123, history=num_input_frames)
-    # store validation losses
+
+    # Store validation losses
     validation_losses = []
 
     for epoch in range(num_epochs):
@@ -110,41 +110,41 @@ if __name__ == '__main__':
             if torch.cuda.is_available():
                 y_label = y_label.cuda()
             nn_label = Variable(y_label)
-            # forward pass
+
+            # Forward pass
             forward_pass = mkcrnn(x)
             loss = loss_func(forward_pass, nn_label)  # compute loss
             optimizer.zero_grad()  # zero gradients from previous step
             loss.backward()  # compute gradients
             optimizer.step()  # apply backpropagation
 
-            # log training
+            # Log training data
             if step % 50 == 0:
-                print('Epoch: ', epoch, 'Step: ', step, '| train loss: %.4f' % loss.data[0])
+                print('Epoch: ', epoch, 'Step: ', step, '| training loss: %.4f' % loss.data[0])
                 valid_loss = 0
                 for (valid_x, valid_y) in valid_loader:
                     valid_y_label = valid_y.view(-1, output_vec)
                     if torch.cuda.is_available():
                         valid_y_label = valid_y_label.cuda()
                     valid_nn_label = Variable(valid_y_label)
-
                     valid_forward_pass = mkcrnn(valid_x)
                     valid_loss_eval = loss_func(valid_forward_pass, valid_nn_label)  # compute validation loss
                     valid_loss += valid_loss_eval.data[0]
                 print('Epoch: ', epoch, 'Step: ', step, '| validation loss: %.4f' % valid_loss)
                 validation_losses.append(valid_loss)
 
-    # save model
+    # Save model
     torch.save(mkcrnn, os.path.join(helper.get_models_folder(), "mkcrnn_{}_frames_{}_lstm.pkl".format(num_input_frames, history)))
 
-    # save validation curve data
+    # Save validation curve data
     fig_data = [validation_losses, num_input_frames, history, num_epochs, batch_size, learning_rate]
     helper.pickle_object(fig_data, "mkcrnn_training_data_{}_frames_{}_lstm".format(num_input_frames, history))
 
-    # show validation curve
+    # Plot validation curve
     f = plt.figure()
     plt.plot(validation_losses)
     plt.ylabel('Validation Error')
     plt.xlabel('Number of Iterations')
-    plt.title('CRNN Cross Validation Error, Learning Rate = %s, Batch Size = %i, Number of Epochs= %i' % (
+    plt.title('LSTM CRNN Cross Validation Error, Learning Rate = %s, Batch Size = %i, Number of Epochs = %i' % (
         learning_rate, batch_size, num_epochs))
     plt.show(block=True)
