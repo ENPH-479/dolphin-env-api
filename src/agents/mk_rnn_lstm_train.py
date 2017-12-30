@@ -99,7 +99,7 @@ if __name__ == '__main__':
             loss.backward()  # compute gradients
             optimizer.step()  # apply backpropagation
 
-            # Log training
+            # Log training data
             if step % 50 == 0:
                 print('Epoch: ', epoch, 'Step: ', step, '| training loss: %.4f' % loss.data[0])
                 valid_loss = 0
@@ -108,7 +108,6 @@ if __name__ == '__main__':
                     if torch.cuda.is_available():
                         valid_y_label = valid_y_label.cuda()
                     valid_nn_label = Variable(valid_y_label)
-
                     valid_forward_pass = mkrnn(valid_x)
                     valid_loss_eval = loss_func(valid_forward_pass, valid_nn_label)  # compute validation loss
                     valid_loss += valid_loss_eval.data[0]
