@@ -33,14 +33,14 @@ class MKCRNN(nn.Module):
         """ Convolutional Recurrent Neural Network architecture of Mario Kart AI agent. """
         super(MKCRNN, self).__init__()
         self.input_size = input_size
+        self.history = history
         self.conv1_in, self.conv1_out, self.conv1_kernel = num_input_frames, 9, 3
         self.conv1_max_kernel = 3
-        self.conv2_in, self.conv2_out, self.conv2_kernel = self.conv1_out, 6, 3
+        self.conv2_in, self.conv2_out, self.conv2_kernel = self.conv1_out, self.history, 3
         self.hidden_size_1 = self.conv2_out
         self.hidden_size_2 = hidden_size_2
         self.hidden_size_3 = hidden_size_3
         self.hidden_size_4 = hidden_size_4
-        self.history = history
         self.output_vec = output_vec
 
         self.conv1 = nn.Sequential(
