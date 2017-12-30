@@ -21,7 +21,7 @@ hidden_size_2 = 64
 hidden_size_3 = 64
 hidden_size_4 = 64
 output_vec = len(keylog.Keyboard)
-num_input_frames = 1
+num_input_frames = 3
 history = 3
 num_epochs = 50
 batch_size = 50
@@ -37,7 +37,7 @@ class MKCRNN(nn.Module):
         self.conv1_in, self.conv1_out, self.conv1_kernel = num_input_frames, 9, 3
         self.conv1_max_kernel = 3
         self.conv2_in, self.conv2_out, self.conv2_kernel = self.conv1_out, self.history, 3
-        self.hidden_size_1 = self.conv2_out
+        self.hidden_size_1 = 5 * 5
         self.hidden_size_2 = hidden_size_2
         self.hidden_size_3 = hidden_size_3
         self.hidden_size_4 = hidden_size_4
