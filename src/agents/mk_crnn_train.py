@@ -19,9 +19,11 @@ logger = logging.getLogger(__name__)
 input_size = 15
 hidden_size_2 = 64
 hidden_size_3 = 64
+hidden_size_4 = 64
 output_vec = len(keylog.Keyboard)
-num_input_frames = 2
-num_epochs = 1
+num_input_frames = 1
+history = 3
+num_epochs = 50
 batch_size = 50
 l2_reg = 0.05
 learning_rate = 1e-5
@@ -34,10 +36,11 @@ class MKCRNN(nn.Module):
         self.conv1_in, self.conv1_out, self.conv1_kernel = num_input_frames, 9, 3
         self.conv1_max_kernel = 3
         self.conv2_in, self.conv2_out, self.conv2_kernel = self.conv1_out, 6, 3
-        self.hidden_size_1 = self.conv2_out * 5 * 5
+        self.hidden_size_1 = self.conv2_out
         self.hidden_size_2 = hidden_size_2
         self.hidden_size_3 = hidden_size_3
-        self.history = num_input_frames
+        self.hidden_size_4 = hidden_size_4
+        self.history = history
         self.output_vec = output_vec
 
         self.conv1 = nn.Sequential(
@@ -51,18 +54,18 @@ class MKCRNN(nn.Module):
             nn.LeakyReLU(),
         )
 
-        self.lstm = nn.LSTM(self.input_size * self.input_size,
-                            self.hidden_size_1,
+        self.lstm = nn.LSTM(self.hidden_size_1,
+                            self.hidden_size_2,
                             num_layers=self.history, dropout=0.5)
 
         self.encoder = nn.Sequential(
-            nn.Linear(self.history * self.hidden_size_1, self.hidden_size_2),
+            nn.Linear(self.history * self.hidden_size_2, self.hidden_size_3),
             nn.Dropout(0.5),
             nn.LeakyReLU(),
-            nn.Linear(self.hidden_size_2, self.hidden_size_3),
+            nn.Linear(self.hidden_size_3, self.hidden_size_4),
             nn.Dropout(0.5),
             nn.LeakyReLU(),
-            nn.Linear(self.hidden_size_3, self.output_vec)
+            nn.Linear(self.hidden_size_4, self.output_vec)
         )
 
         if torch.cuda.is_available():
@@ -77,9 +80,9 @@ class MKCRNN(nn.Module):
             x = x.cuda()
         out = self.conv1(x)
         out = self.conv2(out)
-        out = out.view(out.size(0), -1)  # flatten the output of conv2 to (batch_size, 6 * 5 *5)
+        out = out.view(-1, self.history, self.hidden_size_1)
         out, _ = self.lstm(out)
-        out = out.view(-1, self.history * self.hidden_size_1)
+        out = out.view(-1, self.history * self.hidden_size_2)
         encoded = self.encoder(out)
         return encoded
 
