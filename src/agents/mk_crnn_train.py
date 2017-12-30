@@ -21,7 +21,7 @@ hidden_size_2 = 64
 hidden_size_3 = 64
 hidden_size_4 = 64
 output_vec = len(keylog.Keyboard)
-num_input_frames = 3
+num_input_frames = 1
 history = 3
 num_epochs = 50
 batch_size = 50
@@ -134,11 +134,11 @@ if __name__ == '__main__':
                 validation_losses.append(valid_loss)
 
     # save model
-    torch.save(mkcrnn, os.path.join(helper.get_models_folder(), "mkcrnn_{}_frames.pkl".format(num_input_frames)))
+    torch.save(mkcrnn, os.path.join(helper.get_models_folder(), "mkcrnn_{}_frames_{}_lstm.pkl".format(num_input_frames, history)))
 
     # save validation curve data
-    fig_data = [validation_losses, num_input_frames, num_epochs, batch_size, learning_rate]
-    helper.pickle_object(fig_data, "mkcrnn_training_data_{}_frames".format(num_input_frames))
+    fig_data = [validation_losses, num_input_frames, history, num_epochs, batch_size, learning_rate]
+    helper.pickle_object(fig_data, "mkcrnn_training_data_{}_frames_{}_lstm".format(num_input_frames, history))
 
     # show validation curve
     f = plt.figure()
@@ -147,4 +147,4 @@ if __name__ == '__main__':
     plt.xlabel('Number of Iterations')
     plt.title('CRNN Cross Validation Error, Learning Rate = %s, Batch Size = %i, Number of Epochs= %i' % (
         learning_rate, batch_size, num_epochs))
-    plt.show()
+    plt.show(block=True)
