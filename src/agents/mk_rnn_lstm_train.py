@@ -1,14 +1,18 @@
 """
-This module implements a Convolutional Neural Network (CNN) Mario Kart AI Agent using PyTorch.
+This module implements a Recurrent Neural Network (RNN) Mario Kart AI Agent using
+Long Short-Term Memory (LSTM) and PyTorch.
 """
 
+import logging
+import os
 import matplotlib.pyplot as plt
-import torch
-import torch.nn as nn
-from torch.autograd import Variable
 
 from src import helper, keylog
 from src.agents.train_valid_data import get_mario_train_valid_loader
+
+import torch
+import torch.nn as nn
+from torch.autograd import Variable
 
 logger = logging.getLogger(__name__)
 
@@ -19,17 +23,16 @@ hidden_size_2 = 64
 hidden_size_3 = 64
 output_vec = len(keylog.Keyboard)
 history = 3
-
 num_epochs = 50
 batch_size = 50
-
+l2_reg = 0.05
 learning_rate = 1e-5
 
 
-class MKRNN(nn.Module):
+class MKRNN_lstm(nn.Module):
     def __init__(self):
-        """ Neural network architecture of Mario Kart AI agent. """
-        super(MKRNN, self).__init__()
+        """ Recurrent Neural Network (RNN) architecture of Mario Kart AI agent with LSTM. """
+        super(MKRNN_lstm, self).__init__()
         self.input_size = input_size
         self.history = history
         self.hidden_size_1 = hidden_size_1
@@ -69,15 +72,16 @@ class MKRNN(nn.Module):
 
 if __name__ == '__main__':
     """ Train neural network Mario Kart AI agent. """
-    mkrnn = MKRNN()
-    # define gradient descent optimizer and loss function
-    optimizer = torch.optim.Adam(mkrnn.parameters(), weight_decay=0.05, lr=learning_rate)
+    mkrnn = MKRNN_lstm()
+
+    # Define gradient descent optimizer and loss function
+    optimizer = torch.optim.Adam(mkrnn.parameters(), weight_decay=l2_reg, lr=learning_rate)
     loss_func = nn.MSELoss()
 
-    # load data
+    # Load data
     train_loader, valid_loader = get_mario_train_valid_loader(batch_size, False, 123, history=history)
 
-    # store validation losses
+    # Store validation losses
     validation_losses = []
 
     for epoch in range(num_epochs):
@@ -88,16 +92,16 @@ if __name__ == '__main__':
                 y_label = y_label.cuda()
             nn_label = Variable(y_label)
 
-            # forward pass
+            # Forward pass
             forward_pass = mkrnn(x)
             loss = loss_func(forward_pass, nn_label)  # compute loss
             optimizer.zero_grad()  # zero gradients from previous step
             loss.backward()  # compute gradients
             optimizer.step()  # apply backpropagation
 
-            # log training
+            # Log training
             if step % 50 == 0:
-                print('Epoch: ', epoch, 'Step: ', step, '| train loss: %.4f' % loss.data[0])
+                print('Epoch: ', epoch, 'Step: ', step, '| training loss: %.4f' % loss.data[0])
                 valid_loss = 0
                 for (valid_x, valid_y) in valid_loader:
                     valid_y_label = valid_y.view(-1, output_vec)
@@ -111,18 +115,18 @@ if __name__ == '__main__':
                 print('Epoch: ', epoch, 'Step: ', step, '| validation loss: %.4f' % valid_loss)
                 validation_losses.append(valid_loss)
 
-    # save model
-    torch.save(mkrnn, os.path.join(helper.get_models_folder(), "mkrnn_{}.pkl".format(history)))
+    # Save model
+    torch.save(mkrnn, os.path.join(helper.get_models_folder(), "mkrnn_{}_lstm.pkl".format(history)))
 
-    # save validation curve data
+    # Save validation curve data
     fig_data = [validation_losses, history, num_epochs, batch_size, learning_rate]
-    helper.pickle_object(fig_data, "mkrnn_{}".format(history))
+    helper.pickle_object(fig_data, "mkrnn_lstm_training_data_{}_frames".format(history))
 
-    # show validation curve
+    # Plot validation curve
     f = plt.figure()
     plt.plot(validation_losses)
-    plt.ylabel('Validation error')
-    plt.xlabel('Number of iterations')
-    plt.title('NN Cross Validation Error, learning rate = %s, batch size = %i, number of Epochs= %i' % (
+    plt.ylabel('Validation Error')
+    plt.xlabel('Number of Iterations')
+    plt.title('LSTM RNN Cross Validation Error, Learning Rate = %s, Batch Size = %i, Number of Epochs = %i' % (
         learning_rate, batch_size, num_epochs))
-    plt.show()
+    plt.show(block=True)

@@ -132,4 +132,4 @@ if __name__ == '__main__':
     plt.xlabel('Number of Iterations')
     plt.title('CNN Cross Validation Error, Learning Rate = %s, Batch Size = %i, Number of Epochs= %i' % (
         learning_rate, batch_size, num_epochs))
-    plt.show()
+    plt.show(block=True)
