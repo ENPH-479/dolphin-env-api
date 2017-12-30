@@ -11,7 +11,8 @@ import torch
 
 from src import dp_controller, keylog, mk_downsampler, key2pad, helper, dataset_merger
 from src.agents import state_model, mk_naive_agent, mk_nn
-from src.agents.mk_nn_train import MKRNN
+from src.agents.mk_nn_train import MKNN
+from src.agents.mk_rnn_train import MKRNN
 from src.agents.mk_cnn_train import MKCNN
 
 # Configure logger

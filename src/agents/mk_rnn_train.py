@@ -113,7 +113,7 @@ if __name__ == '__main__':
                 validation_losses.append(valid_loss)
 
     # save model
-    torch.save(mkrnn, os.path.join(helper.get_models_folder(), "mkrnn.pkl"))
+    torch.save(mkrnn, os.path.join(helper.get_models_folder(), "mkrnn_{}.pkl".format(history)))
 
     # save validation curve data
     fig_data = [validation_losses, history, num_epochs, batch_size, learning_rate]
