@@ -1,6 +1,6 @@
-""" This module contains code for maintaining the basic Mario Kart AI agent's state-decision map. """
-import logging
-import os
+"""
+This module implements a Convolutional Neural Network (CNN) Mario Kart AI Agent using PyTorch.
+"""
 
 import matplotlib.pyplot as plt
 import torch
