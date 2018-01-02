@@ -6,7 +6,6 @@ from src import helper
 
 logger = logging.getLogger(__name__)
 
-
 def merge(game_name, existing_data='log.json'):
     # merge new data with master dataset for the game
     output_dir = helper.get_output_folder()

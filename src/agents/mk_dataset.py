@@ -40,6 +40,7 @@ class MarioKartDataset(Dataset):
                 tensors.append(img_tensor)
             else:
                 logger.warning("Image not found, using last tensor found")
+                print(img_count)
                 tensors.append(tensors[-1])
         tensor = torch.stack(tensors)
         return tensor, helper.get_output_vector(key_state['presses'])

@@ -12,7 +12,7 @@ import torch
 from src import dp_controller, keylog, mk_downsampler, key2pad, helper, dataset_merger
 from src.agents import state_model, mk_naive_agent, mk_nn
 from src.agents.mk_nn_train import MKNN
-from src.agents.mk_rnn_lstm_train import MKRNN
+from src.agents.mk_rnn_lstm_train import MKRNN_lstm
 from src.agents.mk_cnn_train import MKCNN
 
 # Configure logger
@@ -100,14 +100,14 @@ def log_downsample_merge(logging_delay=0.3):
 # Main function for entering tests
 def main():
     # test_dolphin_controller
-    # test_key_logging()
+    #test_key_logging()
     # test_mario_kart_downsampler()
     # test_state_map_population()
     # test_key2pad()
     # test_process_frame()
     # test_nn_single_imge()
-    # log_downsample_merge(logging_delay=0.2)
-    test_nn("mkcnn.pkl", history=3)
+    log_downsample_merge(logging_delay=0.2)
+    # test_nn("mkcnn.pkl", history=3)
 
 
 if __name__ == '__main__':
