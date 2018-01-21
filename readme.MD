@@ -1,5 +1,9 @@
 # **Dolphin Emulator Environment API**
 
+<p align="center">
+  <img src="./Demo.gif"/>
+</p>
+
 ## What is it? 
 This project aims to provide modular, reusable code for programmatically interfacing with the [Dolphin emulator](https://dolphin-emu.org/). The main motivation behind the project is to provide code that makes it easier for [artificial intelligence (AI)](https://en.wikipedia.org/wiki/Artificial_intelligence) agents to interact with emulated video games, whether the end user is an AI researcher or just someone looking for a fresh twist on "playing" video games. 
 
